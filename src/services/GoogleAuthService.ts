@@ -1,0 +1,34 @@
+// src/services/GoogleAuthService.ts
+
+import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
+import auth from '@react-native-firebase/auth';
+
+GoogleSignin.configure({
+  webClientId: '1054359019154-ffocuj54o7s1mlc3j46t31p76vc8vvl1.apps.googleusercontent.com',
+  iosClientId: '1054359019154-img73v07v33jimuv6qtr87teebvqpq07.apps.googleusercontent.com',
+});
+
+export const signInWithGoogle = async () => {
+  try {
+    await GoogleSignin.hasPlayServices();
+    const userInfo = await GoogleSignin.signIn();
+    console.log('id token: ', userInfo.data?.idToken);
+    if(!(userInfo.data?.idToken == null)) {
+
+      const googleCredential = auth.GoogleAuthProvider.credential(userInfo.data?.idToken);
+      const userCredential = await auth().signInWithCredential(googleCredential);
+      return userCredential.user;
+    }else{
+      console.log("Google SignIn Failed");
+    }
+
+  } catch (error) {
+    if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+      console.log('User cancelled the login flow');
+    } else if (error.code === statusCodes.IN_PROGRESS) {
+      console.log('Sign-in is in progress');
+    } else {
+      console.error(error);
+    }
+  }
+};

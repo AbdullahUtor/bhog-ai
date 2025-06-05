@@ -1,4 +1,12 @@
 # Resolve react_native_pods.rb with node to allow for hoisting
+use_frameworks! :linkage => :static
+
+pod 'FirebaseCore', '11.12.0'
+pod 'FirebaseAuth', '11.12.0'
+pod 'FirebaseStorage', '11.12.0'
+pod 'GoogleUtilities', :modular_headers => true
+pod 'FirebaseCoreInternal', :modular_headers => true
+
 require Pod::Executable.execute_command('node', ['-p',
   'require.resolve(
     "react-native/scripts/react_native_pods.rb",
@@ -11,7 +19,7 @@ prepare_react_native_project!
 linkage = ENV['USE_FRAMEWORKS']
 if linkage != nil
   Pod::UI.puts "Configuring Pod with #{linkage}ally linked Frameworks".green
-  use_frameworks! :linkage => linkage.to_sym
+  use_frameworks! :linkage => :static
 end
 
 target 'bhogi' do

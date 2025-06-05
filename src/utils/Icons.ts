@@ -1,0 +1,33 @@
+const Icons = {
+  // back: require('../../assets/icons/back.png'),
+  goldenLogo: require('../../assets/icons/golden-logo.png'),
+  markerPin: require('../../assets/icons/marker-pin.png'),
+  shrimp: require('../../assets/icons/shrimp.png'),
+  locationMarkerFilled: require('../../assets/icons/location-marker-filled.png'),
+  bookmark: require('../../assets/icons/bookmark.png'),
+  personWalkingIcon: require('../../assets/icons/person-walking-icon.png'),
+  seperatorIcon: require('../../assets/icons/seperator.png'),
+  filledStarIcon: require('../../assets/icons/filled-star-icon.png'),
+  emptyStarIcon: require('../../assets/icons/empty-star-icon.png'),
+  homeIcon: require('../../assets/icons/home-icon.png'),
+  mapIcon: require('../../assets/icons/map-icon.png'),
+  emojiIcon: require('../../assets/icons/emoji-icon.png'),
+  bookmarkNavIcon: require('../../assets/icons/bookmark-nav.png'),
+  iconRight: require('../../assets/icons/arrow-right.png'),
+  restaurantMarker: require('../../assets/icons/restaurant-marker.png'),
+  userLocationMarker: require('../../assets/icons/user-location-marker.png'),
+  userAddIcon: require('../../assets/icons/user-add.png'),
+  logoIcon: require('../../assets/icons/bhogi-logo.png'),
+  foodIconDummy: require('../../assets/icons/food-icon.png'),
+  arrowLeft: require('../../assets/icons/arrow-left.png'),
+  arrowRight: require('../../assets/icons/arrow-right.png'),
+  dropDown: require('../../assets/icons/drop-down.png'),
+  brownLogo: require('../../assets/icons/brown-logo.png'),
+  appleLogo: require('../../assets/icons/apple-logo.png'),
+  googleLogo: require('../../assets/icons/google-logo.png'),
+  fbLogo: require('../../assets/icons/fb-logo.png'),
+  circleFill: require('../../assets/icons/check-circle-fill.png'),
+};
+
+
+export default Icons;
