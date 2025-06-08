@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
+		372153472DF4BE5F00639889 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 372153462DF4BE5F00639889 /* GoogleService-Info.plist */; };
 		761780ED2CA45674006654EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780EC2CA45674006654EE /* AppDelegate.swift */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		87D786138CC5ADFC95976C81 /* Pods_bhogi.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A2F8F5FF805D4F9D0D17CC4E /* Pods_bhogi.framework */; };
@@ -20,6 +21,7 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = bhogi/Info.plist; sourceTree = "<group>"; };
 		13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = PrivacyInfo.xcprivacy; path = bhogi/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		1419FAC96B6D72F9265EA21A /* Pods-bhogi.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-bhogi.debug.xcconfig"; path = "Target Support Files/Pods-bhogi/Pods-bhogi.debug.xcconfig"; sourceTree = "<group>"; };
+		372153462DF4BE5F00639889 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		761780EC2CA45674006654EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = bhogi/AppDelegate.swift; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = bhogi/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		A2F8F5FF805D4F9D0D17CC4E /* Pods_bhogi.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_bhogi.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -42,6 +44,7 @@
 		13B07FAE1A68108700A75B9A /* bhogi */ = {
 			isa = PBXGroup;
 			children = (
+				372153462DF4BE5F00639889 /* GoogleService-Info.plist */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				761780EC2CA45674006654EE /* AppDelegate.swift */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
@@ -160,6 +163,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
+				372153472DF4BE5F00639889 /* GoogleService-Info.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				A986EC66657118CDC37FD887 /* PrivacyInfo.xcprivacy in Resources */,
 			);
