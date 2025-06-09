@@ -1,4 +1,4 @@
-const Icons = {
+const AppIcons = {
   // back: require('../../assets/icons/back.png'),
   goldenLogo: require('../../assets/icons/golden-logo.png'),
   markerPin: require('../../assets/icons/marker-pin.png'),
@@ -22,6 +22,7 @@ const Icons = {
   arrowLeft: require('../../assets/icons/arrow-left.png'),
   arrowRight: require('../../assets/icons/arrow-right.png'),
   dropDown: require('../../assets/icons/drop-down.png'),
+  bhogiLogo: require('../../assets/icons/bhogi-logo.png'),
   brownLogo: require('../../assets/icons/brown-logo.png'),
   appleLogo: require('../../assets/icons/apple-logo.png'),
   googleLogo: require('../../assets/icons/google-logo.png'),
@@ -30,4 +31,4 @@ const Icons = {
 };
 
 
-export default Icons;
+export default AppIcons;

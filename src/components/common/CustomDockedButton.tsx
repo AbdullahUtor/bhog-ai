@@ -1,12 +1,13 @@
 import React from 'react';
-import { TouchableOpacity, View, StyleSheet, Text } from 'react-native';
+import {TouchableOpacity, View, StyleSheet, Text, Image} from 'react-native';
 import { BottomTabBarButtonProps } from '@react-navigation/bottom-tabs';
+import AppIcons from '../../utils/Icons.ts';
 
 const CustomDockedButton: React.FC<BottomTabBarButtonProps> = ({ onPress }) => {
   return (
     <TouchableOpacity onPress={onPress} style={styles.container}>
       <View style={styles.button}>
-        <Text style={styles.plus}>+</Text>
+       <Image style={styles.dockedIcon} source={AppIcons.userAddIcon}></Image>
       </View>
     </TouchableOpacity>
   );
@@ -16,22 +17,27 @@ export default CustomDockedButton;
 
 const styles = StyleSheet.create({
   container: {
-    top: -30,
+    top: -20,
     justifyContent: 'center',
     alignItems: 'center',
   },
   button: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: '#FF8C00',
+    width: 50,
+    height: 48,
+    borderRadius: 14,
+    backgroundColor: '#525147',
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },  // x: 0, y: 2
+    shadowOpacity: 0.2,
+    shadowRadius: 20,
+
   },
-  plus: {
-    fontSize: 32,
-    color: '#fff',
-    fontWeight: 'bold',
-  },
+ dockedIcon: {
+    height: 32,
+   width: 32,
+   alignItems: 'center',
+ },
 });

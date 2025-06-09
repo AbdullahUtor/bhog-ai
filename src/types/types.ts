@@ -7,4 +7,5 @@ export type RootStackParamList = {
   Contact: undefined;
   FoodQuiz: undefined;
   MainTabs: undefined;
+  FoodDetails: { id: string };
 };
