@@ -1,0 +1,25 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "assets/fonts/DMSans-Regular.ttf",
+      "sha1": "8599ebf95f6cd0694dfc3af43522b535fcbfba6d"
+    },
+    {
+      "path": "assets/fonts/EBGaramond-Bold.ttf",
+      "sha1": "630c223439a61a0d4310cc5e109f6bdb8420ce86"
+    },
+    {
+      "path": "assets/fonts/EBGaramond-Medium.ttf",
+      "sha1": "e51a152292f12d2df8c2b73bdf4f42535c8a07bc"
+    },
+    {
+      "path": "assets/fonts/EBGaramond-Regular.ttf",
+      "sha1": "a42a80ba62a0290259a43ac0cb7bb4341e18b387"
+    },
+    {
+      "path": "assets/fonts/SpaceMono-Regular.ttf",
+      "sha1": "fae3a5a43b50e0408fd61e14383d94a023d332b0"
+    }
+  ]
+}
