@@ -88,8 +88,8 @@ const SignInScreen = ({ navigation }) => {
                   <OutlineButton
                       title="Learn more?"
                       onPress={() => {}}
-                      borderColor="#FFFFFF"
-                      backgroundColor="#FFFFFF"
+                      borderColor="#FAFAF7"
+                      backgroundColor="#FAFAF7"
                       color='#303030'
                       isUnderlined={true}
                       disabled={loading}

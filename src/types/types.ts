@@ -6,6 +6,7 @@ export type RootStackParamList = {
   Username: undefined;
   Contact: undefined;
   FoodQuiz: undefined;
+  FoodAllergen: undefined;
   MainTabs: undefined;
   FoodDetails: { id: string };
 };

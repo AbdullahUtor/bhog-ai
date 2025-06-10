@@ -5,7 +5,8 @@ import SignInScreen from '../screens/Auth/SignInScreen';
 import UsernameScreen from '../screens/Auth/UsernameScreen';
 import ContactScreen from '../screens/Auth/ContactScreen';
 import FoodQuizScreen from '../screens/Auth/FoodQuizScreen';
-import FoodAllergensScreen from '../screens/Auth/FoodAllergens.tsx';
+import FoodAllergensScreen from '../screens/Auth/FoodAllergensScreen';
+
 
 const Stack = createNativeStackNavigator();
 
