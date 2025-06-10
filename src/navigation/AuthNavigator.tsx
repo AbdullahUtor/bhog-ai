@@ -5,6 +5,7 @@ import SignInScreen from '../screens/Auth/SignInScreen';
 import UsernameScreen from '../screens/Auth/UsernameScreen';
 import ContactScreen from '../screens/Auth/ContactScreen';
 import FoodQuizScreen from '../screens/Auth/FoodQuizScreen';
+import FoodAllergensScreen from '../screens/Auth/FoodAllergens.tsx';
 
 const Stack = createNativeStackNavigator();
 
@@ -14,7 +15,9 @@ const AuthNavigator = () => {
       <Stack.Screen name="SignIn" component={SignInScreen} />
       <Stack.Screen name="Username" component={UsernameScreen} />
       <Stack.Screen name="Contact" component={ContactScreen} />
+      <Stack.Screen name="FoodAllergens" component={FoodAllergensScreen}/>
       <Stack.Screen name="FoodQuiz" component={FoodQuizScreen} />
+
     </Stack.Navigator>
   );
 };

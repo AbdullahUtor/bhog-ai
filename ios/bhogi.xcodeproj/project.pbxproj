@@ -13,6 +13,11 @@
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		87D786138CC5ADFC95976C81 /* Pods_bhogi.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A2F8F5FF805D4F9D0D17CC4E /* Pods_bhogi.framework */; };
 		A986EC66657118CDC37FD887 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */; };
+		D7BC4E1AA6BC48A3B37D8679 /* DMSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1DEA28F799E84F0580099A6B /* DMSans-Regular.ttf */; };
+		19C8189B42184C1C9FE27987 /* EBGaramond-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F7E8FE31605D41DAB30CA873 /* EBGaramond-Bold.ttf */; };
+		496D8557C0DC4724B6EA1621 /* EBGaramond-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A17515DF61DA4D2996D323E9 /* EBGaramond-Medium.ttf */; };
+		BBEC2C8A43224D5BA5CEA7C6 /* EBGaramond-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 992304BA9F1A4FC9B354B971 /* EBGaramond-Regular.ttf */; };
+		6002B5FE10D44BB398D77418 /* SpaceMono-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DEDC839034CF440B8B6934A8 /* SpaceMono-Regular.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,6 +32,11 @@
 		A2F8F5FF805D4F9D0D17CC4E /* Pods_bhogi.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_bhogi.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		EE56C1BC45C181AAB38883B7 /* Pods-bhogi.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-bhogi.release.xcconfig"; path = "Target Support Files/Pods-bhogi/Pods-bhogi.release.xcconfig"; sourceTree = "<group>"; };
+		1DEA28F799E84F0580099A6B /* DMSans-Regular.ttf */ = {isa = PBXFileReference; name = "DMSans-Regular.ttf"; path = "../assets/fonts/DMSans-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		F7E8FE31605D41DAB30CA873 /* EBGaramond-Bold.ttf */ = {isa = PBXFileReference; name = "EBGaramond-Bold.ttf"; path = "../assets/fonts/EBGaramond-Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		A17515DF61DA4D2996D323E9 /* EBGaramond-Medium.ttf */ = {isa = PBXFileReference; name = "EBGaramond-Medium.ttf"; path = "../assets/fonts/EBGaramond-Medium.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		992304BA9F1A4FC9B354B971 /* EBGaramond-Regular.ttf */ = {isa = PBXFileReference; name = "EBGaramond-Regular.ttf"; path = "../assets/fonts/EBGaramond-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		DEDC839034CF440B8B6934A8 /* SpaceMono-Regular.ttf */ = {isa = PBXFileReference; name = "SpaceMono-Regular.ttf"; path = "../assets/fonts/SpaceMono-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -78,6 +88,7 @@
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				BBD78D7AC51CEA395F1C20DB /* Pods */,
+				EBE88A8551D74133AFE22E84 /* Resources */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -100,6 +111,19 @@
 			);
 			path = Pods;
 			sourceTree = "<group>";
+		};
+		EBE88A8551D74133AFE22E84 /* Resources */ = {
+			isa = "PBXGroup";
+			children = (
+				1DEA28F799E84F0580099A6B /* DMSans-Regular.ttf */,
+				F7E8FE31605D41DAB30CA873 /* EBGaramond-Bold.ttf */,
+				A17515DF61DA4D2996D323E9 /* EBGaramond-Medium.ttf */,
+				992304BA9F1A4FC9B354B971 /* EBGaramond-Regular.ttf */,
+				DEDC839034CF440B8B6934A8 /* SpaceMono-Regular.ttf */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+			path = "";
 		};
 /* End PBXGroup section */
 
@@ -166,6 +190,11 @@
 				372153472DF4BE5F00639889 /* GoogleService-Info.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				A986EC66657118CDC37FD887 /* PrivacyInfo.xcprivacy in Resources */,
+				D7BC4E1AA6BC48A3B37D8679 /* DMSans-Regular.ttf in Resources */,
+				19C8189B42184C1C9FE27987 /* EBGaramond-Bold.ttf in Resources */,
+				496D8557C0DC4724B6EA1621 /* EBGaramond-Medium.ttf in Resources */,
+				BBEC2C8A43224D5BA5CEA7C6 /* EBGaramond-Regular.ttf in Resources */,
+				6002B5FE10D44BB398D77418 /* SpaceMono-Regular.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

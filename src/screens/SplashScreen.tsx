@@ -1,48 +1,61 @@
 // import React, {useEffect} from 'react';
-import React, { useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
 import BhogiLogo from '../components/common/CenteredLogo.tsx';
+import {fetchUserProfile} from "../services/UserService.ts";
 
 export default function SplashScreen() {
   const navigation = useNavigation();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-      setTimeout(() => {
-      const unsubscribe = auth().onAuthStateChanged(async (user) => {
+    const checkAuthState = () => {
+      const unsubscribe = auth().onAuthStateChanged(async user => {
         if (user) {
           try {
-            const idToken = await user.getIdToken(true); // true forces refresh
-            console.log('✅ Firebase ID Token:', idToken);
+            const { isValidUser } = await fetchUserProfile();
 
             navigation.reset({
               index: 0,
-              routes: [{ name: 'MainTabs' }],
+              routes: [{ name: isValidUser ? 'MainTabs' : 'Username' }],
             });
-          } catch (error) {
-            console.error('Failed to get ID token:', error);
+          } catch (e) {
+            // fallback to login
+            navigation.reset({
+              index: 0,
+              routes: [{ name: 'SignIn' }],
+            });
           }
         } else {
-          // No user is signed in
           navigation.reset({
             index: 0,
-            routes: [{ name: 'SignIn' }], // or your AuthNavigator initial route
+            routes: [{ name: 'SignIn' }],
           });
         }
       });
-        return unsubscribe;
-    }, 2000);
 
-    // clean up on unmount
+      return unsubscribe;
+    };
+
+    const timeout = setTimeout(() => checkAuthState(), 2000);
+
+    return () => clearTimeout(timeout);
   }, [navigation]);
 
+
   return (
-    <View style={styles.container}>
-      <View style={styles.content}>
+      <View style={styles.container}>
         <BhogiLogo />
+        {loading && (
+            <ActivityIndicator
+                size="large"
+                color="#ffffff"
+                style={styles.loader}
+            />
+        )}
       </View>
-    </View>
   );
 }
 
@@ -53,8 +66,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  content: {
-    justifyContent: 'center',
-    alignItems: 'center',
+  loader: {
+    marginTop: 20,
   },
 });
