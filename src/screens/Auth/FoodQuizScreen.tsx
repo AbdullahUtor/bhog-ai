@@ -16,6 +16,7 @@ import AppIcons from '../../utils/Icons.ts';
 import OutlineButton from '../../components/common/OutlineButton.tsx';
 import palette from '../../utils/colors.ts';
 import baseClient from '../../services/BaseClient.ts';
+import {SvgUri} from 'react-native-svg';
 
 const { width, height } = Dimensions.get('window');
 
@@ -40,7 +41,12 @@ const DishChip: React.FC<DishChipProps> = ({ dish, selected, onPress }) => (
     style={[styles.chip, selected && styles.chipSelected]}
   >
     <View style={styles.chipContent}>
-      <Image source={{ uri: dish.icon_url }} style={styles.chipIcon} />
+      <SvgUri
+        uri={dish.icon_url || ''} // Convert undefined to empty string
+        width={16}
+        height={16}
+        style={styles.chipIcon}
+      />
       <Text style={[styles.chipText, selected && styles.chipTextSelected]}>
         {dish.dish_name}
       </Text>
@@ -48,11 +54,12 @@ const DishChip: React.FC<DishChipProps> = ({ dish, selected, onPress }) => (
   </Pressable>
 );
 
-const FoodQuizScreen = () => {
+const FoodQuizScreen = ({ navigation }) =>{
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const [dishes, setDishes] = useState<Dish[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [submittingDishes, setSubmittingDishes] = useState(false);
 
   const loadDishes = async () => {
     setLoading(true);
@@ -89,12 +96,42 @@ const FoodQuizScreen = () => {
     );
   };
 
-  const handleContinue = () => {
-    if (selectedItems.length >= 5) {
-      // Navigate to the next screen
-      // router.push('/(tabs)'); // Replace with actual navigation code
-    } else {
+  const handleContinue = async () => {
+    if (selectedItems.length < 5) {
       Alert.alert('Please select at least 5 dishes to continue.');
+      return;
+    }
+
+    setSubmittingDishes(true);
+    try {
+      const selectedDishIds = selectedItems.map(id => parseInt(id, 10));
+
+      const requestBody = {
+        selectedDishes: selectedDishIds
+      };
+
+      console.log('Sending selected dishes:', requestBody);
+
+      const response = await baseClient.post('/user/selected-dishes', requestBody);
+
+      if (response.status === 200 || response.status === 201) {
+        console.log('Successfully saved selected dishes:', response.data);
+        navigation.reset({
+          index: 0,
+          routes:[{name: 'MainTabs'}],
+        });
+      } else {
+        console.warn('Unexpected response:', response);
+        Alert.alert('Error', 'Failed to save your preferences. Please try again.');
+      }
+    } catch (error: any) {
+      console.error('Failed to save selected dishes:', error?.response ?? error);
+      Alert.alert(
+        'Error',
+        'Failed to save your preferences. Please check your connection and try again.'
+      );
+    } finally {
+      setSubmittingDishes(false);
     }
   };
 
@@ -143,7 +180,11 @@ const FoodQuizScreen = () => {
           ))}
         </View>
       </ScrollView>
-
+      {submittingDishes ? (
+        <View style={{ paddingVertical: 12, alignItems: 'center' }}>
+          <ActivityIndicator size="small" color={palette.accent.black} />
+        </View>
+      ) : (
       <OutlineButton
         title="Continue"
         onPress={handleContinue}
@@ -151,6 +192,9 @@ const FoodQuizScreen = () => {
         borderColor={selectedItems.length >= 5 ? palette.primary.main : '#ccc'}
         color="#fff"
       />
+        )}
+
+      <View style={{ paddingBottom: 22 }}/>
     </View>
   );
 };
@@ -158,7 +202,7 @@ const FoodQuizScreen = () => {
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 24,
-    backgroundColor: '#fff',
+    backgroundColor: '#FAFAF7',
     paddingTop: 32,
     flex: 1,
   },
@@ -207,18 +251,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   chip: {
-    borderColor: palette.primary.light,
+    borderColor: palette.accent.dark,
     borderWidth: 1,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderRadius: 25,
+    paddingVertical: 11.5,
+    paddingHorizontal: 16,
+    borderRadius: 40,
     marginRight: 8,
     marginBottom: 8,
-    backgroundColor: '#fff',
+    // backgroundColor: '#fff',
   },
   chipSelected: {
-    backgroundColor: palette.primary.main,
-    borderColor: palette.primary.main,
+    backgroundColor: palette.accent.dark,
+    borderColor: palette.accent.dark,
   },
   chipContent: {
     flexDirection: 'row',
@@ -233,7 +277,7 @@ const styles = StyleSheet.create({
   },
   chipText: {
     color: palette.primary.dark,
-    fontFamily: 'EB Garamond',
+    fontFamily: 'DM Sans',
     fontSize: width * 0.035,
     fontWeight: '400',
   },

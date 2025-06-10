@@ -28,7 +28,7 @@ const SignInScreen = ({ navigation }) => {
                 navigation.reset({
                     index: 0,
                     // routes: [{ name: 'MainTabs' }],
-                    routes:[{name: 'FoodQuiz'}],
+                    routes:[{name: 'FoodAllergen'}],
                 });
             } else {
                 // Otherwise, go to Username screen to complete profile

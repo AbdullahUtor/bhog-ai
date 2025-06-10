@@ -28,7 +28,7 @@ type Allergen = {
   inclusive_allowed?: boolean;
 };
 
-const FoodAllergensScreen = () => {
+const FoodAllergensScreen  = ({ navigation }) =>{
   const [allergens, setAllergens] = useState<Allergen[]>([]);
   const [selectedItems, setSelectedItems] = useState<(number | string)[]>([]);
   // allergenTypeMap stores 'exclusive' or 'inclusive' for each allergen ID
@@ -94,7 +94,10 @@ const FoodAllergensScreen = () => {
 
       if (response.status >= 200 && response.status < 300) {
         console.log('Allergens submitted successfully:', response.data);
-        // You can navigate or show success here
+        navigation.reset({
+          index: 0,
+          routes:[{name: 'FoodQuiz'}],
+        });
       } else {
         console.warn('Unexpected response:', response);
       }
