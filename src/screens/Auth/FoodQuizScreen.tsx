@@ -3,164 +3,136 @@ import {
   View,
   Text,
   StyleSheet,
-  SafeAreaView,
   TouchableOpacity,
   Image,
-  FlatList,
   Dimensions,
+  Alert,
+  ScrollView,
+  SafeAreaView,
   ActivityIndicator,
-} from 'react-native';  // adjust import path
+  Pressable,
+} from 'react-native';
 import AppIcons from '../../utils/Icons.ts';
 import OutlineButton from '../../components/common/OutlineButton.tsx';
 import palette from '../../utils/colors.ts';
 import baseClient from '../../services/BaseClient.ts';
+import {SvgUri} from 'react-native-svg';
 
 const { width, height } = Dimensions.get('window');
 
-type Allergen = {
-  id: number | string;
-  allergen_name: string;
-  allergen_description?: string;
+export interface Dish {
+  id: number;
+  dish_name: string;
+  distance?: string;
   icon_url?: string;
-  exclusive_allowed?: boolean;
-  inclusive_allowed?: boolean;
+  isSelected?: boolean;
+}
+
+// Chip component for individual dish selection
+type DishChipProps = {
+  dish: Dish;
+  selected: boolean;
+  onPress: () => void;
 };
 
-const FoodQuizScreen = () => {
-  const [allergens, setAllergens] = useState<Allergen[]>([]);
-  const [selectedItems, setSelectedItems] = useState<(number | string)[]>([]);
-  // allergenTypeMap stores 'exclusive' or 'inclusive' for each allergen ID
-  const [allergenTypeMap, setAllergenTypeMap] = useState<
-    Record<number, 'exclusive' | 'inclusive'>
-  >({});
+const DishChip: React.FC<DishChipProps> = ({ dish, selected, onPress }) => (
+  <Pressable
+    onPress={onPress}
+    style={[styles.chip, selected && styles.chipSelected]}
+  >
+    <View style={styles.chipContent}>
+      <SvgUri
+        uri={dish.icon_url || ''} // Convert undefined to empty string
+        width={16}
+        height={16}
+        style={styles.chipIcon}
+      />
+      <Text style={[styles.chipText, selected && styles.chipTextSelected]}>
+        {dish.dish_name}
+      </Text>
+    </View>
+  </Pressable>
+);
+
+const FoodQuizScreen = ({ navigation }) =>{
+  const [selectedItems, setSelectedItems] = useState<string[]>([]);
+  const [dishes, setDishes] = useState<Dish[]>([]);
   const [loading, setLoading] = useState(false);
-  const [submittingAllergens, setSubmittingAllergens] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [submittingDishes, setSubmittingDishes] = useState(false);
 
-  const isContinueEnabled = selectedItems.length > 0 && !submittingAllergens;
-
-  const fetchAllergensFromAPI = async () => {
+  const loadDishes = async () => {
     setLoading(true);
-    setError(null);
     try {
-      const response = await baseClient.get('/allergens/?page=1&limit=300');
-      if (response.status === 200 && response.data?.data) {
-        const data = response.data.data as Allergen[];
-        setAllergens([
-          ...data,
-          {
-            id: 'no_sensitivity',
-            allergen_name: "I don't have any sensitivities",
-          },
-        ]);
+      const res = await baseClient.get('/dishes/?page=1&limit=100');
+
+      if (res.status === 200 && res.data?.results && Array.isArray(res.data.results)) {
+        const fetchedDishes: Dish[] = res.data.results.map((dish: Dish) => ({
+          ...dish,
+          isSelected: false,
+        }));
+        setDishes(fetchedDishes);
       } else {
-        setError('Unexpected response from server');
+        console.warn('Unexpected response from server:', res);
+        Alert.alert('Error', 'Unexpected response from server. See console for details.');
       }
-    } catch (err) {
-      setError('Failed to fetch allergens');
-      console.error(err);
+    } catch (error: any) {
+      console.error('Failed to load dishes:', error?.response ?? error);
+      Alert.alert('Error', 'Failed to load dishes. See console for details.');
     } finally {
       setLoading(false);
     }
   };
 
-  const submitSelectedAllergens = async (
-    selectedItems: (number | string)[],
-    allergenTypeMap: Record<number, 'exclusive' | 'inclusive'>
-  ) => {
-    setSubmittingAllergens(true);
-    try {
-      let payload;
-
-      if (selectedItems.includes('no_sensitivity')) {
-        // Empty allergens list if no sensitivities selected
-        payload = { allergens: [] };
-      } else {
-        const validAllergens = selectedItems.filter(
-          (id) => typeof id === 'number'
-        ) as number[];
-
-        payload = {
-          allergens: validAllergens.map((id) => ({
-            allergen_id: id,
-            type: allergenTypeMap[id] || 'inclusive', // default to inclusive if missing
-          })),
-        };
-      }
-
-      const response = await baseClient.post('/user/allergens', payload);
-
-      if (response.status >= 200 && response.status < 300) {
-        console.log('Allergens submitted successfully:', response.data);
-        // You can navigate or show success here
-      } else {
-        console.warn('Unexpected response:', response);
-      }
-    } catch (error) {
-      console.error('Error submitting allergens:', error);
-    } finally {
-      setSubmittingAllergens(false);
-    }
-  };
-
   useEffect(() => {
-    fetchAllergensFromAPI();
+    loadDishes();
   }, []);
 
-  // Toggle selection and update allergenTypeMap accordingly
-  const toggleSelection = (item: Allergen) => {
-    const id = item.id;
-    if (id === 'no_sensitivity') {
-      setSelectedItems(['no_sensitivity']);
-      setAllergenTypeMap({}); // Clear allergenTypeMap
-    } else {
-      setSelectedItems((prev) => {
-        // Remove "no_sensitivity" if present
-        const withoutNoSensitivity = prev.filter((i) => i !== 'no_sensitivity');
-        if (prev.includes(id)) {
-          // Deselect allergen
-          const newSelected = withoutNoSensitivity.filter((i) => i !== id);
-          // Remove from allergenTypeMap
-          setAllergenTypeMap((prevMap) => {
-            const copy = { ...prevMap };
-            delete copy[id as number];
-            return copy;
-          });
-          return newSelected;
-        } else {
-          // Select allergen
-          setAllergenTypeMap((prevMap) => ({
-            ...prevMap,
-            [id as number]: item.exclusive_allowed ? 'exclusive' : 'inclusive',
-          }));
-          return [...withoutNoSensitivity, id];
-        }
-      });
-    }
+  const handleDishSelection = (id: string) => {
+    setSelectedItems((prevSelected) =>
+      prevSelected.includes(id)
+        ? prevSelected.filter((item) => item !== id)
+        : [...prevSelected, id]
+    );
   };
 
-  const renderItem = ({ item }: { item: Allergen }) => {
-    const isSelected = selectedItems.includes(item.id);
+  const handleContinue = async () => {
+    if (selectedItems.length < 5) {
+      Alert.alert('Please select at least 5 dishes to continue.');
+      return;
+    }
 
-    return (
-      <TouchableOpacity
-        onPress={() => {
-          if (!submittingAllergens) toggleSelection(item);
-        }}
-        style={[
-          styles.optionContainer,
-          isSelected ? styles.selected : styles.unselected,
-        ]}
-      >
-        <View style={styles.optionContent}>
-          {item.icon_url && (
-            <Image source={{ uri: item.icon_url }} style={styles.iconStyle} />
-          )}
-          <Text style={styles.optionText}>{item.allergen_name}</Text>
-        </View>
-        {isSelected && <Image source={AppIcons.circleFill} style={styles.checkmarkStyle} />}
-      </TouchableOpacity>
-    );
+    setSubmittingDishes(true);
+    try {
+      const selectedDishIds = selectedItems.map(id => parseInt(id, 10));
+
+      const requestBody = {
+        selectedDishes: selectedDishIds
+      };
+
+      console.log('Sending selected dishes:', requestBody);
+
+      const response = await baseClient.post('/user/selected-dishes', requestBody);
+
+      if (response.status === 200 || response.status === 201) {
+        console.log('Successfully saved selected dishes:', response.data);
+        navigation.reset({
+          index: 0,
+          routes:[{name: 'MainTabs'}],
+        });
+      } else {
+        console.warn('Unexpected response:', response);
+        Alert.alert('Error', 'Failed to save your preferences. Please try again.');
+      }
+    } catch (error: any) {
+      console.error('Failed to save selected dishes:', error?.response ?? error);
+      Alert.alert(
+        'Error',
+        'Failed to save your preferences. Please check your connection and try again.'
+      );
+    } finally {
+      setSubmittingDishes(false);
+    }
   };
 
   if (loading) {
@@ -179,138 +151,139 @@ const FoodQuizScreen = () => {
         style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}
       >
         <Text>{error}</Text>
-        <OutlineButton title="Retry" onPress={fetchAllergensFromAPI} />
+        <OutlineButton title="Retry" onPress={loadDishes} />
       </SafeAreaView>
     );
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.innerContainer}>
-        <TouchableOpacity
-          style={styles.backButtonStyle}
-          onPress={() => {
-            console.log('Go Back!!');
-          }}
-        >
-          <Image style={styles.arrowStyle} source={AppIcons.arrowLeft} />
+    <View style={styles.container}>
+      <View style={styles.sideContainer}>
+        <TouchableOpacity onPress={() => console.log('GoBack!')} style={styles.backButton}>
+          <Image source={AppIcons.arrowLeft} style={styles.arrow} />
         </TouchableOpacity>
-
-        <View style={styles.headingAndBodyText}>
-          <Text style={styles.textStyle}>Do you have any food sensitivities?</Text>
-        </View>
-
-        <View style={{ flex: 1 }}>
-          <FlatList
-            data={allergens}
-            keyExtractor={(item) => item.id.toString()}
-            showsVerticalScrollIndicator={false}
-            renderItem={renderItem}
-            contentContainerStyle={styles.listContainer}
-          />
-        </View>
-
-        {submittingAllergens ? (
-          <View style={{ paddingVertical: 12, alignItems: 'center' }}>
-            <ActivityIndicator size="small" color={palette.accent.black} />
-          </View>
-        ) : (
-          <OutlineButton
-            title="Continue"
-            onPress={() => {
-              if (isContinueEnabled) {
-                console.log('Submitting allergens...');
-                submitSelectedAllergens(selectedItems, allergenTypeMap);
-              }
-            }}
-            backgroundColor={isContinueEnabled ? palette.accent.black : palette.accent.dark}
-            borderColor={isContinueEnabled ? palette.accent.black : palette.accent.dark}
-            color={isContinueEnabled ? '#ffffff' : '#cccccc'}
-            disabled={!isContinueEnabled}
-          />
-        )}
       </View>
-    </SafeAreaView>
+
+      <View style={styles.headingAndBodyText}>
+        <Text style={styles.textStyle}>Choose at least 5 dishes you like:</Text>
+      </View>
+
+      <ScrollView contentContainerStyle={styles.chipContainer}>
+        <View style={styles.chipWrap}>
+          {dishes.map((dish) => (
+            <DishChip
+              key={dish.id}
+              dish={dish}
+              selected={selectedItems.includes(dish.id.toString())}
+              onPress={() => handleDishSelection(dish.id.toString())}
+            />
+          ))}
+        </View>
+      </ScrollView>
+      {submittingDishes ? (
+        <View style={{ paddingVertical: 12, alignItems: 'center' }}>
+          <ActivityIndicator size="small" color={palette.accent.black} />
+        </View>
+      ) : (
+      <OutlineButton
+        title="Continue"
+        onPress={handleContinue}
+        backgroundColor={selectedItems.length >= 5 ? palette.primary.main : '#ccc'}
+        borderColor={selectedItems.length >= 5 ? palette.primary.main : '#ccc'}
+        color="#fff"
+      />
+        )}
+
+      <View style={{ paddingBottom: 22 }}/>
+    </View>
   );
 };
 
-export default FoodQuizScreen;
-
 const styles = StyleSheet.create({
   container: {
+    paddingHorizontal: 24,
+    backgroundColor: '#FAFAF7',
+    paddingTop: 32,
     flex: 1,
-    backgroundColor: '#fff',
-    paddingHorizontal: 20,
   },
-  innerContainer: {
-    flex: 1,
-    paddingHorizontal: 20,
-    paddingBottom: 20,
+  sideContainer: {
+    width: height * 0.04,
+    height: height * 0.04,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-
-  headingAndBodyText: {
-    marginVertical: height * 0.02,
-  },
-  backButtonStyle: {
+  backButton: {
     backgroundColor: palette.accent.light,
-    height: height * 0.045,
-    width: height * 0.045,
     borderRadius: 100,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: height * 0.015,
+    height: '100%',
+    width: '100%',
   },
-  arrowStyle: {
+  arrow: {
     height: height * 0.025,
     width: height * 0.025,
     resizeMode: 'contain',
   },
-  textStyle: {
-    fontSize: width * 0.07,
-    fontWeight: '400',
-    fontFamily: 'EB Garamond',
-    color: palette.primary.dark,
-    paddingRight: width * 0.1,
-  },
-  listContainer: {
-    paddingBottom: height * 0.02,
-    gap: 12,
-  },
-  optionContainer: {
-    width: '100%',
-    height: height * 0.07,
-    borderRadius: 18,
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-  },
-  unselected: {
-    borderWidth: 1,
-    borderColor: '#AFAFA0',
+  headingAndBodyText: {
+    flexDirection: 'column',
     justifyContent: 'flex-start',
+    alignItems: 'flex-start',
   },
-  selected: {
-    borderWidth: 2,
-    borderColor: '#262020',
-    justifyContent: 'space-between',
+  textStyle: {
+    textAlign: 'left',
+    fontFamily: 'EB Garamond',
+    fontSize: width * 0.09,
+    fontWeight: '400',
+    paddingTop: height * 0.02,
+    paddingRight: width * 0.15,
+    paddingBottom: height * 0.014,
+    color: palette.primary.dark,
   },
-  optionContent: {
+  chipContainer: {
+    paddingVertical: 16,
+    flexGrow: 1,
+  },
+  chipWrap: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  chip: {
+    borderColor: palette.accent.dark,
+    borderWidth: 1,
+    paddingVertical: 11.5,
+    paddingHorizontal: 16,
+    borderRadius: 40,
+    marginRight: 8,
+    marginBottom: 8,
+    // backgroundColor: '#fff',
+  },
+  chipSelected: {
+    backgroundColor: palette.accent.dark,
+    borderColor: palette.accent.dark,
+  },
+  chipContent: {
     flexDirection: 'row',
     alignItems: 'center',
   },
-  iconStyle: {
-    width: 24,
-    height: 24,
-    marginRight: 12,
+  chipIcon: {
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+    marginRight: 6,
     resizeMode: 'contain',
   },
-  optionText: {
-    fontSize: width * 0.045,
-    color: '#000',
+  chipText: {
+    color: palette.primary.dark,
+    fontFamily: 'DM Sans',
+    fontSize: width * 0.035,
+    fontWeight: '400',
   },
-  checkmarkStyle: {
-    width: 18,
-    height: 18,
-    resizeMode: 'contain',
+  chipTextSelected: {
+    color: '#fff',
   },
 });
+
+export default FoodQuizScreen;

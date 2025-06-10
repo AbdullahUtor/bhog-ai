@@ -28,7 +28,7 @@ const SignInScreen = ({ navigation }) => {
                 navigation.reset({
                     index: 0,
                     // routes: [{ name: 'MainTabs' }],
-                    routes:[{name: 'FoodQuiz'}],
+                    routes:[{name: 'FoodAllergen'}],
                 });
             } else {
                 // Otherwise, go to Username screen to complete profile
@@ -88,8 +88,8 @@ const SignInScreen = ({ navigation }) => {
                   <OutlineButton
                       title="Learn more?"
                       onPress={() => {}}
-                      borderColor="#FFFFFF"
-                      backgroundColor="#FFFFFF"
+                      borderColor="#FAFAF7"
+                      backgroundColor="#FAFAF7"
                       color='#303030'
                       isUnderlined={true}
                       disabled={loading}
