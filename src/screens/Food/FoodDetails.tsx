@@ -1,5 +1,5 @@
 // src/screens/Food/FoodDetailsScreen.tsx
-import React, {useRef} from 'react';
+import React, {useRef, useState} from 'react';
 import {
   View,
   Text,
@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Image,
   StyleSheet,
-  Dimensions,
+  Dimensions, Linking,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { RouteProp } from '@react-navigation/native';
@@ -16,10 +16,11 @@ import ScrollView = Animated.ScrollView;
 import AppIcons from '../../utils/Icons.ts';
 import RatingBar from '../../components/common/RattingBar.tsx';
 import palette from '../../utils/colors.ts';
-import { FoodPost } from '../../services/RecommendationService.ts';
 import { RootStackParamList } from '../../types/types.ts';
-import BottomSheet from '@gorhom/bottom-sheet';
 import RBSheet from 'react-native-raw-bottom-sheet';
+import MiniMap from '../../components/common/MiniMap.tsx';
+import MapOptionsContent from '../../components/common/MapOptionSheet.tsx';
+
 
 const { width, height } = Dimensions.get('window');
 
@@ -34,6 +35,7 @@ interface FoodDetailsProps {
 const FoodDetails: React.FC<FoodDetailsProps> = ({ route }) => {
   const navigation = useNavigation();
   const { id, foodPost } = route.params;
+  const [isVisible, setIsVisible] = useState(false);
   const bottomSheetRef = useRef<any>(null);
 
   // Helper function to format price
@@ -70,39 +72,60 @@ const FoodDetails: React.FC<FoodDetailsProps> = ({ route }) => {
     bottomSheetRef.current?.close();
   };
 
+  const openInAppleMaps = () => {
+    const { lat, lng } = foodPost;
+    const url = `http://maps.apple.com/?daddr=${lat},${lng}`;
+    Linking.openURL(url).catch(err => console.error('An error occurred', err));
+  };
+
+  const openInGoogleMaps = () => {
+    const { lat, lng } = foodPost;
+    const url = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
+    Linking.openURL(url).catch(err => console.error('An error occurred', err));
+  };
+
+
   // Bottom Sheet Content Component
-  const MapOptionsContent = () => (
-    <View style={bottomSheetStyles.container}>
-      {/* Address Section */}
-      <View style={bottomSheetStyles.addressContainer}>
-        <Text style={bottomSheetStyles.address}>115 N. Canton Street, Washington DC</Text>
-        <Text style={bottomSheetStyles.question}>How are you directing there?</Text>
-      </View>
-
-      {/* Dinner Date Section */}
-      <Text style={bottomSheetStyles.title}>Dinner Date</Text>
-      <Text style={bottomSheetStyles.subtitle}>Eat with a friend</Text>
-
-      {/* User Info Card */}
-      <View style={bottomSheetStyles.userCard}>
-        <Image
-          source={AppIcons.foodIconDummy} // Update path as needed
-          style={bottomSheetStyles.userImage}
-        />
-        <View style={bottomSheetStyles.userInfo}>
-          <Text style={bottomSheetStyles.userName}>Kim B.</Text>
-          <Text style={bottomSheetStyles.userTitle}>Gourmet Guru</Text>
-          <Text style={bottomSheetStyles.userMeals}>2 meals shared</Text>
-        </View>
-        <TouchableOpacity
-          onPress={handleCloseBottomSheet}
-          style={bottomSheetStyles.changeButton}
-        >
-          <Text style={bottomSheetStyles.changeText}>Change</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
+  // const MapOptionsContent = () => (
+  //   <View style={bottomSheetStyles.container}>
+  //     {/* Address Section */}
+  //     <View style={bottomSheetStyles.addressContainer}>
+  //       <Text style={bottomSheetStyles.address}>{foodPost.address}</Text>
+  //       <Text style={bottomSheetStyles.question}>How are you directing there?</Text>
+  //
+  //
+  //     {/* Dinner Date Section */}
+  //     <Text style={bottomSheetStyles.subtitle}>Apple Maps</Text>
+  //       <View style={
+  //         {
+  //           backgroundColor: palette.primary.dark,
+  //         }
+  //       }></View>
+  //
+  //       <Text style={bottomSheetStyles.subtitle}>Apple Maps</Text>
+  //
+  //     </View>
+  //
+  //     {/* User Info Card */}
+  //     <View style={bottomSheetStyles.userCard}>
+  //       <Image
+  //         source={AppIcons.foodIconDummy} // Update path as needed
+  //         style={bottomSheetStyles.userImage}
+  //       />
+  //       <View style={bottomSheetStyles.userInfo}>
+  //         <Text style={bottomSheetStyles.userName}>Kim B.</Text>
+  //         <Text style={bottomSheetStyles.userTitle}>Gourmet Guru</Text>
+  //         <Text style={bottomSheetStyles.userMeals}>2 meals shared</Text>
+  //       </View>
+  //       <TouchableOpacity
+  //         onPress={handleCloseBottomSheet}
+  //         style={bottomSheetStyles.changeButton}
+  //       >
+  //         <Text style={bottomSheetStyles.changeText}>Change</Text>
+  //       </TouchableOpacity>
+  //     </View>
+  //   </View>
+  // );
 
   return (
     <View style={styles.container}>
@@ -207,16 +230,18 @@ const FoodDetails: React.FC<FoodDetailsProps> = ({ route }) => {
             <View style={{ flex: 1 }}>
               <Text style={styles.sectionTitle}>Location</Text>
               <Text style={styles.subText}>
-                {foodPost.restaurantName || 'Unknown Restaurant'}
+                {foodPost.address  || 'Unknown Restaurant'}
                 {/*{foodPost.restaurant_address && ` - ${foodPost.restaurant_address}`}*/}
                 {/*{foodPost.restaurant_phone && ` - ${foodPost.restaurant_phone}`}*/}
               </Text>
             </View>
             <View style={styles.mapBox}>
-              {/* Add your map component here if available */}
+              <MiniMap latitude={foodPost.lat ?? 38.897095} longitude={foodPost.lng ?? -77.006332} />
             </View>
+
           </View>
         </View>
+
 
         <View style={styles.divider} />
 
@@ -252,25 +277,51 @@ const FoodDetails: React.FC<FoodDetailsProps> = ({ route }) => {
 
       <RBSheet
         ref={bottomSheetRef}
-        height={400}
+        height={340}
         openDuration={250}
         closeDuration={200}
         customStyles={{
           wrapper: {
-            backgroundColor: 'rgba(0, 0, 0, 0.6)',
+            backgroundColor: 'rgba(0, 0, 0, 0.6)', // Darker background like Flutter
           },
           container: {
             borderTopLeftRadius: 18,
             borderTopRightRadius: 18,
-            backgroundColor: 'transparent',
+            backgroundColor: 'transparent', // Let content define color
+            overflow: 'visible',
           },
           draggableIcon: {
             backgroundColor: '#000',
           },
         }}
       >
-        <MapOptionsContent />
+        <MapOptionsContent  onClose={handleCloseBottomSheet}
+                            onOpenAppleMaps={openInAppleMaps}
+                            onOpenGoogleMaps={openInGoogleMaps} />
       </RBSheet>
+
+
+      {/*<RBSheet*/}
+      {/*  ref={bottomSheetRef}*/}
+      {/*  height={400}*/}
+      {/*  openDuration={250}*/}
+      {/*  closeDuration={200}*/}
+      {/*  customStyles={{*/}
+      {/*    wrapper: {*/}
+      {/*      backgroundColor: 'rgba(0, 0, 0, 0.2)',*/}
+      {/*    },*/}
+      {/*    container: {*/}
+      {/*      borderTopLeftRadius: 18,*/}
+      {/*      borderTopRightRadius: 18,*/}
+      {/*      backgroundColor: 'transparent',*/}
+      {/*    },*/}
+      {/*    draggableIcon: {*/}
+      {/*      backgroundColor: '#000',*/}
+      {/*    },*/}
+      {/*  }}*/}
+      {/*>*/}
+      {/*  <MapOptionsContent />*/}
+      {/*</RBSheet>*/}
 
     </View>
   );
@@ -285,27 +336,28 @@ const bottomSheetStyles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 16,
     paddingTop: 20,
-    backgroundColor: '#fff',
+    backgroundColor: 'transparent',
     borderTopLeftRadius: 18,
     borderTopRightRadius: 18,
   },
   addressContainer: {
-    backgroundColor: '#808080',
+    backgroundColor: 'white',
     borderRadius: 18,
+    opacity: 0.80,
     padding: 16,
     marginBottom: 20,
     alignItems: 'center',
   },
   address: {
-    color: '#fff',
+    color: '#3D3D3D',
     fontSize: 14,
     fontFamily: 'Gabarito',
     textAlign: 'center',
     marginBottom: 4,
   },
   question: {
-    color: '#fff',
-    fontSize: 12,
+    color: '#7F7F7F',
+    fontSize: 13,
     fontFamily: 'Gabarito',
     textAlign: 'center',
   },
@@ -375,14 +427,12 @@ const bottomSheetStyles = StyleSheet.create({
 });
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
+
   container: {
     flex: 1,
     paddingHorizontal: 18,
     justifyContent: 'space-between',
+    backgroundColor: palette.primary.bg,
   },
   scrollContent: {
     paddingBottom: 30,
@@ -391,7 +441,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingTop: 45,
+    paddingTop: 55,
   },
   sideContainer: {
     width: height * 0.04,
@@ -419,13 +469,13 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: '600',
-    fontFamily: 'DMSans'
+    fontFamily: 'DMSans',
 
   },
   locationRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingBottom: 12,
+    paddingBottom: 10,
   },
   locationIcon: {
     height: 18,
@@ -443,6 +493,8 @@ const styles = StyleSheet.create({
   dishRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
+
   },
   dishTitle: {
     fontFamily: 'EB Garamond',
@@ -450,11 +502,14 @@ const styles = StyleSheet.create({
     flex: 1,
     lineHeight: 36,
     textTransform: 'capitalize',
-    marginRight: 12,
+    paddingRight: 22,
   },
   foodIconContainer: {
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#F8F5F2',
+    height: 64, width: 64,
+    borderRadius: 100,
   },
   foodIcon: {
     height: 42,
@@ -464,6 +519,7 @@ const styles = StyleSheet.create({
   description: {
     fontSize: 12,
     fontFamily: 'Gabarito',
+    textTransform: 'capitalize',
     color: '#76766A',
     paddingVertical: 12,
     lineHeight: 14,
@@ -497,7 +553,7 @@ const styles = StyleSheet.create({
   sectionHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'flex-start',
   },
   sectionTitle: {
     fontSize: 24,
@@ -521,11 +577,14 @@ const styles = StyleSheet.create({
     fontFamily: 'Gabarito',
     lineHeight: 14,
     color: '#76766A',
+    textTransform: 'capitalize',
     paddingTop: 12,
   },
   mapBox: {
     width: 170,
     height: 100,
+    borderRadius: 14,
+    overflow: 'hidden'
   },
   notForMeText: {
     fontSize: 12,
@@ -539,7 +598,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 12,
+    paddingTop: 12,
+    paddingBottom: 32,
   },
   bookmarkButton: {
     height: 62,

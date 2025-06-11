@@ -269,7 +269,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     letterSpacing: -0.01,
     lineHeight: 23,
-    paddingRight: 22,
+    paddingRight: 36,
   },
 
 

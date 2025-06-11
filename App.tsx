@@ -4,22 +4,24 @@ import RootNavigator from './src/navigation/RootNavigator';
 
 
 import '@react-native-firebase/auth';
-import {firebase} from '@react-native-firebase/auth'; // Add other services if used
+import {firebase} from '@react-native-firebase/auth';
+import {UserProvider} from './src/hooks/UserContext.tsx'; // Add other services if used
 
 function App(): JSX.Element {
   useEffect(() => {
-    // Initialize Firebase if not already initialized
     if (!firebase.apps.length) {
       firebase.initializeApp(
         firebase
-      ); // No config needed if native setup is done
+      );
     }
   }, []);
 
   return (
-    <NavigationContainer>
-      <RootNavigator />
-    </NavigationContainer>
+    <UserProvider>
+      <NavigationContainer>
+        <RootNavigator />
+      </NavigationContainer>
+    </UserProvider>
   );
 }
 

@@ -159,11 +159,11 @@ const FoodQuizScreen = ({ navigation }) =>{
 
   return (
     <View style={styles.container}>
-      <View style={styles.sideContainer}>
-        <TouchableOpacity onPress={() => console.log('GoBack!')} style={styles.backButton}>
-          <Image source={AppIcons.arrowLeft} style={styles.arrow} />
-        </TouchableOpacity>
-      </View>
+      {/*<View style={styles.sideContainer}>*/}
+      {/*  <TouchableOpacity onPress={() => console.log('GoBack!')} style={styles.backButton}>*/}
+      {/*    <Image source={AppIcons.arrowLeft} style={styles.arrow} />*/}
+      {/*  </TouchableOpacity>*/}
+      {/*</View>*/}
 
       <View style={styles.headingAndBodyText}>
         <Text style={styles.textStyle}>Choose at least 5 dishes you like:</Text>
@@ -227,6 +227,7 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   headingAndBodyText: {
+    paddingTop: height * 0.02,
     flexDirection: 'column',
     justifyContent: 'flex-start',
     alignItems: 'flex-start',

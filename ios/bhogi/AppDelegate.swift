@@ -3,6 +3,8 @@ import React
 import React_RCTAppDelegate
 import ReactAppDependencyProvider
 import Firebase
+import GoogleMaps
+
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -31,6 +33,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     )
 
     FirebaseApp.configure()
+    GMSServices.provideAPIKey("AIzaSyAfABbu1Vp6fr7YThQW8Ie_AE5ZiNEvcBQ")
     return true
   }
 }

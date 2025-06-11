@@ -8,10 +8,13 @@ import Icons from '../../utils/Icons.ts';
 import palette from '../../utils/colors.ts';
 import OutlineButton from '../../components/common/OutlineButton.tsx';
 import {fetchUserProfile} from "../../services/UserService.ts";
+import {useUser} from '../../hooks/UserContext.tsx';
 const { width, height } = Dimensions.get('window');
 
 const SignInScreen = ({ navigation }) => {
     const [loading, setLoading] = useState(false);
+  const { setUser } = useUser();
+
   const handleGoogleSignIn = async () => {
     setLoading(true);
 
@@ -21,10 +24,11 @@ const SignInScreen = ({ navigation }) => {
             console.log('User Info:', user);
             // navigation.navigate('Username');
 
-            const { isValidUser } = await fetchUserProfile();
+            const { isValidUser, userData } = await fetchUserProfile();
 
             if (isValidUser) {
                 // Navigate directly to MainTabs if profile is complete
+              setUser(userData);
                 navigation.reset({
                     index: 0,
                     // routes: [{ name: 'MainTabs' }],
