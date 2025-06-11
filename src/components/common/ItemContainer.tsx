@@ -4,24 +4,28 @@ import {
   Text,
   Image,
   Dimensions,
-  TouchableOpacity,
+   StyleSheet,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import Ripple from 'react-native-material-ripple';
 
 import AppIcons from '../../utils/Icons.ts';
 import palette from '../../utils/colors.ts';
 import RatingBar from './RattingBar.tsx';
-import {FoodPost} from '../../services/RecommendationService.ts'; // Adjust path as needed
+import { FoodPost } from '../../services/RecommendationService.ts';
+import { RootStackParamList } from '../../types/types.ts';
 
 interface ItemContainerProps {
   foodPost: FoodPost;
 }
 
+type ItemContainerNavigationProp = NativeStackNavigationProp<RootStackParamList>;
+
 const screenWidth = Dimensions.get('window').width;
 
 const ItemContainer: React.FC<ItemContainerProps> = ({ foodPost }) => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<ItemContainerNavigationProp>();
 
   // Helper function to format price
   const formatPrice = (price: number | null): string => {
@@ -51,7 +55,7 @@ const ItemContainer: React.FC<ItemContainerProps> = ({ foodPost }) => {
       <View style={styles.distanceAndPriceContainer}>
         <View style={styles.foodTitleIconAndLocation}>
           <View style={styles.foodIconContainer}>
-            {/* Use icon_url from API or fallback to default */}
+
             <Image
               style={styles.foodIcon}
               source={
@@ -81,9 +85,10 @@ const ItemContainer: React.FC<ItemContainerProps> = ({ foodPost }) => {
               />
               <Text style={{
                 fontFamily: 'Gabarito',
+                textTransform: 'capitalize',
                 fontSize: 12,
                 fontWeight: '500',
-                color: palette.accent.accentDark
+                color: palette.accent.accentDark,
               }}>
                 {foodPost.restaurantName || 'Unknown Restaurant'}
               </Text>
@@ -102,6 +107,7 @@ const ItemContainer: React.FC<ItemContainerProps> = ({ foodPost }) => {
           paddingVertical: 12,
           fontSize: 12,
           fontWeight: '400',
+          textTransform: 'capitalize',
           fontFamily: 'Gabarito',
           lineHeight: 12 * 1.18,
           color: '#76766A'
@@ -212,8 +218,6 @@ const ItemContainer: React.FC<ItemContainerProps> = ({ foodPost }) => {
 
 export default ItemContainer;
 
-
-
 const styles = StyleSheet.create({
   itemContainer: {
     borderColor: 'rgba(175, 175, 160, 0.4)',
@@ -223,6 +227,7 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     borderWidth: 1,
     padding: 14,
+    marginBottom: 16,
   },
 
   distanceAndPriceContainer: {
@@ -260,9 +265,11 @@ const styles = StyleSheet.create({
   title: {
     fontFamily: 'EB Garamond',
     fontWeight: '500',
+    textTransform: 'capitalize',
     fontSize: 24,
     letterSpacing: -0.01,
     lineHeight: 23,
+    paddingRight: 22,
   },
 
 

@@ -62,13 +62,23 @@ export class FoodApiService {
    * @param radius - Optional radius parameter (if API supports it)
    * @returns Promise<Restaurant[]>
    */
-  static async getClosestRestaurants(radius?: number): Promise<Restaurant[]> {
+  static async getClosestRestaurants(
+    radius: number = 100,
+    latitude: number = 38.897095,
+    longitude: number = -77.006332
+  ): Promise<any> {
     try {
-      const params = radius ? { radius } : {};
-      const response = await baseClient.get<RestaurantsResponse>(
+      const params = {
+        radius,
+        latitude,
+        longitude
+      };
+
+      const response = await baseClient.get(
         '/restaurants/closest-restaurant',
         { params }
       );
+
       return response.data.restaurants;
     } catch (error) {
       console.error('Error fetching closest restaurants:', error);

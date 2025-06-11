@@ -9,7 +9,9 @@ import {
   TouchableOpacity, StyleSheet,
 } from 'react-native';
 import ItemContainer from '../../components/common/ItemContainer.tsx';
-import RecommendationService, {FoodPost} from '../../services/RecommendationService.ts'; // Adjust path as needed
+import RecommendationService, {FoodPost} from '../../services/RecommendationService.ts';
+import palette from '../../utils/colors.ts';
+import AppBarWithLeading from '../../components/common/AppBar.tsx'; // Adjust path as needed
 
 const HomeScreen: React.FC = () => {
   const [foodPosts, setFoodPosts] = useState<FoodPost[]>([]);
@@ -71,7 +73,7 @@ const HomeScreen: React.FC = () => {
 
   if (error && foodPosts.length === 0) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 }}>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <Text style={{ fontSize: 18, marginBottom: 10, textAlign: 'center' }}>
           Unable to load recommendations
         </Text>
@@ -94,17 +96,15 @@ const HomeScreen: React.FC = () => {
   }
 
   return (
+    <View style={styles.container}>
+      <AppBarWithLeading />
+
     <ScrollView
-      style={{ flex: 1 }}
+      style={{ flex: 1, paddingTop: 40 }}
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
     >
-      <View style={{ padding: 16 }}>
-        <Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 16 }}>
-          Food Recommendations
-        </Text>
-
         {foodPosts.length === 0 ? (
           <View style={{ alignItems: 'center', marginTop: 50 }}>
             <Text style={{ fontSize: 16, color: '#666' }}>
@@ -119,8 +119,11 @@ const HomeScreen: React.FC = () => {
             <ItemContainer key={foodPost.dish_id} foodPost={foodPost} />
           ))
         )}
-      </View>
+
+      <View style={{ height: 82 }}></View>
+
     </ScrollView>
+    </View>
   );
 };
 
@@ -129,9 +132,14 @@ export default HomeScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    backgroundColor: palette.primary.bg,
     alignItems: 'center',
   },
+  // container: {
+  //   flex: 1,
+  //   justifyContent: 'center',
+  //   alignItems: 'center',
+  // },
   text: {
     fontSize: 24,
     fontWeight: '600',

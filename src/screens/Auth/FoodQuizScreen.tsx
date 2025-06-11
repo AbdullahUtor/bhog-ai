@@ -54,6 +54,7 @@ const DishChip: React.FC<DishChipProps> = ({ dish, selected, onPress }) => (
   </Pressable>
 );
 
+// @ts-ignore
 const FoodQuizScreen = ({ navigation }) =>{
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const [dishes, setDishes] = useState<Dish[]>([]);

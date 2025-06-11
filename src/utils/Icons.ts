@@ -28,6 +28,9 @@ const AppIcons = {
   googleLogo: require('../../assets/icons/google-logo.png'),
   fbLogo: require('../../assets/icons/fb-logo.png'),
   circleFill: require('../../assets/icons/check-circle-fill.png'),
+  indicator: require('../../assets/icons/indicator.png'),
+  close: require('../../assets/icons/close.png'),
+  dummyUser: require('../../assets/icons/dummyuser.png'),
 };
 
 

@@ -1,153 +1,378 @@
 // src/screens/Food/FoodDetailsScreen.tsx
-import React from 'react';
-import {View, Text, Animated, TouchableOpacity, Image, StyleSheet, Dimensions} from 'react-native';
+import React, {useRef} from 'react';
+import {
+  View,
+  Text,
+  Animated,
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+  Dimensions,
+} from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { RouteProp } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import ScrollView = Animated.ScrollView;
 import AppIcons from '../../utils/Icons.ts';
 import RatingBar from '../../components/common/RattingBar.tsx';
 import palette from '../../utils/colors.ts';
+import { FoodPost } from '../../services/RecommendationService.ts';
+import { RootStackParamList } from '../../types/types.ts';
+import BottomSheet from '@gorhom/bottom-sheet';
+import RBSheet from 'react-native-raw-bottom-sheet';
+
 const { width, height } = Dimensions.get('window');
 
-const FoodDetails = ({ route }) => {
-  const { id } = route.params;
-  const restaurantLocation = { latitude: 40.7128, longitude: -74.0060 };
+type FoodDetailsRouteProp = RouteProp<RootStackParamList, 'FoodDetails'>;
+type FoodDetailsNavigationProp = NativeStackNavigationProp<RootStackParamList, 'FoodDetails'>;
+
+interface FoodDetailsProps {
+  route: FoodDetailsRouteProp;
+  navigation: FoodDetailsNavigationProp;
+}
+
+const FoodDetails: React.FC<FoodDetailsProps> = ({ route }) => {
+  const navigation = useNavigation();
+  const { id, foodPost } = route.params;
+  const bottomSheetRef = useRef<any>(null);
+
+  // Helper function to format price
+  const formatPrice = (price: number | null): string => {
+    if (price === null) return '$';
+    return `$${price.toFixed(2)}`;
+  };
+
+  // Helper function to get rating display
+  const getRatingDisplay = () => {
+    if (foodPost.rating && foodPost.review_count) {
+      return {
+        rating: foodPost.rating,
+        reviewCount: foodPost.review_count,
+      };
+    }
+    return {
+      rating: 3.5,
+      reviewCount: 0,
+    };
+  };
+
+  const { rating, reviewCount } = getRatingDisplay();
+
+  const handleGoBack = () => {
+    navigation.goBack();
+  };
+
+  const handleOpenBottomSheet = () => {
+    bottomSheetRef.current?.open();
+  };
+
+  const handleCloseBottomSheet = () => {
+    bottomSheetRef.current?.close();
+  };
+
+  // Bottom Sheet Content Component
+  const MapOptionsContent = () => (
+    <View style={bottomSheetStyles.container}>
+      {/* Address Section */}
+      <View style={bottomSheetStyles.addressContainer}>
+        <Text style={bottomSheetStyles.address}>115 N. Canton Street, Washington DC</Text>
+        <Text style={bottomSheetStyles.question}>How are you directing there?</Text>
+      </View>
+
+      {/* Dinner Date Section */}
+      <Text style={bottomSheetStyles.title}>Dinner Date</Text>
+      <Text style={bottomSheetStyles.subtitle}>Eat with a friend</Text>
+
+      {/* User Info Card */}
+      <View style={bottomSheetStyles.userCard}>
+        <Image
+          source={AppIcons.foodIconDummy} // Update path as needed
+          style={bottomSheetStyles.userImage}
+        />
+        <View style={bottomSheetStyles.userInfo}>
+          <Text style={bottomSheetStyles.userName}>Kim B.</Text>
+          <Text style={bottomSheetStyles.userTitle}>Gourmet Guru</Text>
+          <Text style={bottomSheetStyles.userMeals}>2 meals shared</Text>
+        </View>
+        <TouchableOpacity
+          onPress={handleCloseBottomSheet}
+          style={bottomSheetStyles.changeButton}
+        >
+          <Text style={bottomSheetStyles.changeText}>Change</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
 
   return (
-
-      <View style={styles.container}>
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.scrollContent}
-        >
-          {/* Header */}
-          <View style={styles.header}>
-            <View style={styles.sideContainer}>
-              <TouchableOpacity onPress={() => console.log("Go Back!!")} style={styles.backButton}>
-                <Image source={AppIcons.arrowLeft} style={styles.arrow} />
-              </TouchableOpacity>
-            </View>
-            <View style={styles.titleContainer}>
-              <Text style={styles.title}>bhogi</Text>
-            </View>
-            <View style={styles.sideContainer} />
-          </View>
-
-          <View style={{ height: 42 }} />
-
-          {/* Location */}
-          <View style={styles.locationRow}>
-            <Image source={AppIcons.locationMarkerFilled} style={styles.locationIcon} />
-            <Text style={styles.locationText}>Restaurant Italiana</Text>
-          </View>
-
-          {/* Dish Title + Icon */}
-          <View style={styles.dishRow}>
-            <Text style={styles.dishTitle}>
-              Scallop Crudo with Nectarine Puree
-            </Text>
-            <View style={styles.foodIconContainer}>
-              <Image style={styles.foodIcon} source={AppIcons.shrimp} />
-            </View>
-          </View>
-
-          {/* Description */}
-          <Text style={styles.description}>
-            Description of dish here. Lightly braised scallops in a butter sauce on a bed of freshly picked nectarines and some more text here just to test the elipses
-          </Text>
-
-          {/* Rating and Price */}
-          <View style={styles.ratingRow}>
-            <View style={styles.ratingContainer}>
-              <RatingBar
-                rating={3.5}
-                maxStars={5}
-                emptyStar={AppIcons.emptyStarIcon}
-                filledStar={AppIcons.filledStarIcon}
-                starSize={14}
-              />
-              <Text style={styles.ratingText}>(293)</Text>
-            </View>
-            <Text style={styles.price}>$18.99</Text>
-          </View>
-
-          <View style={styles.divider} />
-
-          {/* Allergens */}
-          <View>
-            <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>Allergens</Text>
-              <View style={{ alignItems: 'flex-start' }}>
-                <Text style={styles.editText}>Edit</Text>
-                <View style={styles.underline} />
-              </View>
-            </View>
-            <Text style={styles.subText} numberOfLines={2} ellipsizeMode='tail'>
-              Wheat, gluten, soy, shellfish
-            </Text>
-          </View>
-
-          <View style={styles.divider} />
-
-          {/* Location Section */}
-          <View>
-            <View style={styles.sectionHeader}>
-              <View style={{ flex: 1 }}>
-                <Text style={styles.sectionTitle}>Location</Text>
-                <Text style={styles.subText}>
-                  Restaurant Italiana 115 N. Canton St. Washington DC (692) 555-2828
-                </Text>
-              </View>
-              <View style={styles.mapBox}>
-                {/*<MiniMap latitude={37.78825} longitude={-122.4324} />*/}
-              </View>
-            </View>
-          </View>
-
-          <View style={styles.divider} />
-
-          {/* Not for me */}
-          <View style={styles.sectionHeader}>
-            <Text style={styles.notForMeText}>
-              Doesn’t sound good? Let us know so we can learn your preferences!
-            </Text>
-            <View style={{ alignItems: 'flex-start' }}>
-              <Text style={styles.editText}>Not for me</Text>
-              <View style={styles.underline} />
-            </View>
-          </View>
-        </ScrollView>
-
-        {/* Fixed Footer */}
-        <View>
-          <View style={styles.footer}>
-            <View style={styles.bookmarkButton}>
-              <Image source={AppIcons.bookmark} style={styles.bookmarkIcon} />
-            </View>
-            <View style={{ width: 18 }} />
-            <TouchableOpacity onPress={
-              ()=>      console.log("open Bottom Sheet!")
-              // handleOpenSheet
-            }>
-              <View style={styles.eatButton}>
-                <Text style={styles.eatButtonText}>Let's eat!</Text>
-                <Text style={styles.eatButtonTime}>7 min</Text>
-              </View>
+    <View style={styles.container}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContent}
+      >
+        {/* Header */}
+        <View style={styles.header}>
+          <View style={styles.sideContainer}>
+            <TouchableOpacity onPress={handleGoBack} style={styles.backButton}>
+              <Image source={AppIcons.arrowLeft} style={styles.arrow} />
             </TouchableOpacity>
+          </View>
+          <View style={styles.titleContainer}>
+            <Text style={styles.title}>bhogi</Text>
+          </View>
+          <View style={styles.sideContainer} />
+        </View>
+
+        <View style={{ height: 42 }} />
+
+        {/* Location */}
+        <View style={styles.locationRow}>
+          <Image source={AppIcons.locationMarkerFilled} style={styles.locationIcon} />
+          <Text style={styles.locationText}>
+            {foodPost.restaurantName || 'Unknown Restaurant'}
+          </Text>
+        </View>
+
+        {/* Dish Title + Icon */}
+        <View style={styles.dishRow}>
+          <Text style={styles.dishTitle}>
+            {foodPost.name}
+          </Text>
+          <View style={styles.foodIconContainer}>
+            <Image
+              style={styles.foodIcon}
+              source={
+                foodPost.icon_url
+                  ? { uri: foodPost.icon_url }
+                  : AppIcons.shrimp
+              }
+              onError={() => {
+                console.log('Failed to load food icon, using default');
+              }}
+            />
           </View>
         </View>
 
-        {/*<DirectionSheet*/}
-        {/*  ref={bottomSheetRef}*/}
-        {/*  latitude={restaurantLocation.latitude}*/}
-        {/*  longitude={restaurantLocation.longitude}*/}
-        {/*  onClose={handleCloseSheet}*/}
-        {/*/>*/}
+        {/* Description */}
+        <Text style={styles.description}>
+          {foodPost.description || 'Delicious dish with carefully selected ingredients...'}
+        </Text>
+
+        {/* Rating and Price */}
+        <View style={styles.ratingRow}>
+          <View style={styles.ratingContainer}>
+            <RatingBar
+              rating={rating}
+              maxStars={5}
+              emptyStar={AppIcons.emptyStarIcon}
+              filledStar={AppIcons.filledStarIcon}
+              starSize={14}
+            />
+            <Text style={styles.ratingText}>
+              ({reviewCount > 0 ? reviewCount : '0'})
+            </Text>
+          </View>
+          <Text style={styles.price}>
+            {formatPrice(foodPost.dish_price)}
+          </Text>
+        </View>
+
+        <View style={styles.divider} />
+
+        {/* Allergens */}
+        <View>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>Allergens</Text>
+            <View style={{ alignItems: 'flex-start' }}>
+              <Text style={styles.editText}>Edit</Text>
+              <View style={styles.underline} />
+            </View>
+          </View>
+          <Text style={styles.subText} numberOfLines={2} ellipsizeMode='tail'>
+            {(() => {
+              const allergens = foodPost.allergens;
+              if (allergens && String(allergens).trim()) {
+                return String(allergens).split(',').map(allergen => allergen.trim()).join(', ');
+              }
+              return 'No allergen information available';
+            })()}
+          </Text>
+        </View>
+
+        <View style={styles.divider} />
+
+        {/* Location Section */}
+        <View>
+          <View style={styles.sectionHeader}>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.sectionTitle}>Location</Text>
+              <Text style={styles.subText}>
+                {foodPost.restaurantName || 'Unknown Restaurant'}
+                {/*{foodPost.restaurant_address && ` - ${foodPost.restaurant_address}`}*/}
+                {/*{foodPost.restaurant_phone && ` - ${foodPost.restaurant_phone}`}*/}
+              </Text>
+            </View>
+            <View style={styles.mapBox}>
+              {/* Add your map component here if available */}
+            </View>
+          </View>
+        </View>
+
+        <View style={styles.divider} />
+
+        {/* Not for me */}
+        <View style={styles.sectionHeader}>
+          <Text style={styles.notForMeText}>
+            Doesn't sound good? Let us know so we can learn your preferences!
+          </Text>
+          <View style={{ alignItems: 'flex-start' }}>
+            <Text style={styles.editText}>Not for me</Text>
+            <View style={styles.underline} />
+          </View>
+        </View>
+      </ScrollView>
+
+      {/* Fixed Footer */}
+      <View>
+        <View style={styles.footer}>
+          <View style={styles.bookmarkButton}>
+            <Image source={AppIcons.bookmark} style={styles.bookmarkIcon} />
+          </View>
+          <View style={{ width: 18 }} />
+          <TouchableOpacity onPress={handleOpenBottomSheet}>
+            <View style={styles.eatButton}>
+              <Text style={styles.eatButtonText}>Let's eat!</Text>
+              <Text style={styles.eatButtonTime}>
+                {foodPost.walkingTime || '0 min'}
+              </Text>
+            </View>
+          </TouchableOpacity>
+        </View>
       </View>
 
+      <RBSheet
+        ref={bottomSheetRef}
+        height={400}
+        openDuration={250}
+        closeDuration={200}
+        customStyles={{
+          wrapper: {
+            backgroundColor: 'rgba(0, 0, 0, 0.6)',
+          },
+          container: {
+            borderTopLeftRadius: 18,
+            borderTopRightRadius: 18,
+            backgroundColor: 'transparent',
+          },
+          draggableIcon: {
+            backgroundColor: '#000',
+          },
+        }}
+      >
+        <MapOptionsContent />
+      </RBSheet>
+
+    </View>
   );
 };
 
 export default FoodDetails;
 
+
+// Bottom Sheet Styles
+const bottomSheetStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingHorizontal: 16,
+    paddingTop: 20,
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 18,
+    borderTopRightRadius: 18,
+  },
+  addressContainer: {
+    backgroundColor: '#808080',
+    borderRadius: 18,
+    padding: 16,
+    marginBottom: 20,
+    alignItems: 'center',
+  },
+  address: {
+    color: '#fff',
+    fontSize: 14,
+    fontFamily: 'Gabarito',
+    textAlign: 'center',
+    marginBottom: 4,
+  },
+  question: {
+    color: '#fff',
+    fontSize: 12,
+    fontFamily: 'Gabarito',
+    textAlign: 'center',
+  },
+  title: {
+    fontFamily: 'EB Garamond',
+    fontSize: 24,
+    fontWeight: '400',
+    textAlign: 'center',
+    marginBottom: 4,
+  },
+  subtitle: {
+    fontFamily: 'Gabarito',
+    fontSize: 12,
+    color: palette.accent.accentDark,
+    fontWeight: '500',
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  userCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 12,
+    borderRadius: 18,
+    borderWidth: 1,
+    borderColor: '#E1E1E1',
+    marginBottom: 20,
+  },
+  userImage: {
+    width: 56,
+    height: 56,
+    borderRadius: 18,
+    marginRight: 16,
+  },
+  userInfo: {
+    flex: 1,
+  },
+  userName: {
+    fontFamily: 'EB Garamond',
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 2,
+  },
+  userTitle: {
+    fontFamily: 'Gabarito',
+    fontSize: 14,
+    color: palette.accent.accentDark,
+    fontWeight: '400',
+    lineHeight: 16,
+  },
+  userMeals: {
+    fontFamily: 'Gabarito',
+    fontSize: 14,
+    color: palette.accent.accentDark,
+    fontWeight: '400',
+    lineHeight: 16,
+  },
+  changeButton: {
+    borderBottomWidth: 1,
+    borderBottomColor: '#262020',
+  },
+  changeText: {
+    fontFamily: 'EB Garamond',
+    fontSize: 16,
+    fontWeight: '400',
+    color: '#262020',
+  },
+});
 
 const styles = StyleSheet.create({
   safeArea: {
@@ -166,7 +391,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 12,
+    paddingTop: 45,
   },
   sideContainer: {
     width: height * 0.04,
@@ -192,8 +417,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: '600',
+    fontFamily: 'DMSans'
+
   },
   locationRow: {
     flexDirection: 'row',
@@ -210,6 +437,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '500',
     fontFamily: 'Gabarito',
+    textTransform: 'capitalize',
     color: palette.accent.accentDark,
   },
   dishRow: {
@@ -221,6 +449,7 @@ const styles = StyleSheet.create({
     fontSize: 32,
     flex: 1,
     lineHeight: 36,
+    textTransform: 'capitalize',
     marginRight: 12,
   },
   foodIconContainer: {
@@ -230,6 +459,7 @@ const styles = StyleSheet.create({
   foodIcon: {
     height: 42,
     width: 42,
+    resizeMode: 'cover',
   },
   description: {
     fontSize: 12,

@@ -17,10 +17,14 @@ export default CustomDockedButton;
 
 const styles = StyleSheet.create({
   container: {
-    top: -20,
+    top: -18,
     justifyContent: 'center',
     alignItems: 'center',
+    shadowColor: '#000000',
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
   },
+
   button: {
     width: 50,
     height: 48,
@@ -33,11 +37,11 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },  // x: 0, y: 2
     shadowOpacity: 0.2,
     shadowRadius: 20,
-
   },
+
  dockedIcon: {
     height: 32,
-   width: 32,
-   alignItems: 'center',
+    width: 32,
+    alignItems: 'center',
  },
 });
