@@ -5,18 +5,22 @@ import { useNavigation } from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
 import BhogiLogo from '../components/common/CenteredLogo.tsx';
 import {fetchUserProfile} from "../services/UserService.ts";
+import {useUser} from '../hooks/UserContext.tsx';
+
+
 
 export default function SplashScreen() {
   const navigation = useNavigation();
   const [loading, setLoading] = useState(true);
+  const { setUser } = useUser();
 
   useEffect(() => {
     const checkAuthState = () => {
       const unsubscribe = auth().onAuthStateChanged(async user => {
         if (user) {
           try {
-            const { isValidUser } = await fetchUserProfile();
-
+            const { isValidUser, userData } = await fetchUserProfile();
+            setUser(userData);
             navigation.reset({
               index: 0,
               routes: [{ name: isValidUser ? 'MainTabs' : 'Username' }],

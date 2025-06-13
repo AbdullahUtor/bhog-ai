@@ -1,4 +1,5 @@
 import baseClient from './BaseClient';
+import axios from 'axios';
 
 // Interfaces
 export interface Restaurant {
@@ -15,8 +16,8 @@ export interface Restaurant {
   country: string;
   state: string;
   area: string;
-  latitude: string;
-  longitude: string;
+  latitude: number;
+  longitude: number;
   straight_line_distance: number;
   walking_distance: number;
 }
@@ -45,10 +46,15 @@ export interface FoodPost {
   icon_url: string;
   restaurantName?: string;
   walkingTime?: string;
-}
+  lat?: number | null;
+  lng?: number | null;
 
-interface RestaurantsResponse {
-  restaurants: Restaurant[];
+  // Added from Restaurant interface
+  address?: string;
+  city?: string;
+  country?: string;
+  state?: string;
+  area?: string;
 }
 
 interface RecommendationsResponse {
@@ -56,29 +62,14 @@ interface RecommendationsResponse {
 }
 
 export class FoodApiService {
-
-  /**
-   * Fetch closest restaurants based on user location
-   * @param radius - Optional radius parameter (if API supports it)
-   * @returns Promise<Restaurant[]>
-   */
   static async getClosestRestaurants(
     radius: number = 100,
     latitude: number = 38.897095,
     longitude: number = -77.006332
-  ): Promise<any> {
+  ): Promise<Restaurant[]> {
     try {
-      const params = {
-        radius,
-        latitude,
-        longitude
-      };
-
-      const response = await baseClient.get(
-        '/restaurants/closest-restaurant',
-        { params }
-      );
-
+      const params = { radius, latitude, longitude };
+      const response = await baseClient.get('/restaurants/closest-restaurant', { params });
       return response.data.restaurants;
     } catch (error) {
       console.error('Error fetching closest restaurants:', error);
@@ -86,11 +77,6 @@ export class FoodApiService {
     }
   }
 
-  /**
-   * Fetch food recommendations based on restaurant IDs
-   * @param restaurantIds - Array of restaurant IDs
-   * @returns Promise<FoodPost[]>
-   */
   static async getRecommendations(restaurantIds: string[]): Promise<FoodPost[]> {
     try {
       const response = await baseClient.post<RecommendationsResponse>('/recommendations/', {
@@ -103,50 +89,81 @@ export class FoodApiService {
     }
   }
 
-  /**
-   * Utility function to calculate walking time from distance
-   * @param walkingDistance - Distance in meters
-   * @param walkingSpeedKmh - Walking speed in km/h (default: 5 km/h)
-   * @returns Formatted walking time string
-   */
   static calculateWalkingTime(walkingDistance: number, walkingSpeedKmh: number = 5): string {
-    // Convert km/h to m/min: 5 km/h = 83.33 m/min
     const walkingSpeedMPerMin = (walkingSpeedKmh * 1000) / 60;
     const walkingTimeMinutes = Math.round(walkingDistance / walkingSpeedMPerMin);
     return `${walkingTimeMinutes} min`;
   }
 
-  /**
-   * Main function to get food posts with restaurant data
-   * @param radius - Optional radius for restaurant search
-   * @returns Promise<FoodPost[]> - Enriched food posts with restaurant info
-   */
+  static async getLatLngFromPlaceId(placeId: string): Promise<{ lat: number; lng: number } | null> {
+    const apiKey = 'AIzaSyAK6QcV7ICRykJTlO22myjpe5jGJ6BEg-4';
+    const url = `https://places.googleapis.com/v1/places/${placeId}`;
+
+    try {
+      const response = await axios.get(url, {
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Goog-Api-Key': apiKey,
+          'X-Goog-FieldMask': 'location',
+        },
+      });
+
+      const location = response.data?.location;
+      if (location?.latitude && location?.longitude) {
+        return {
+          lat: location.latitude,
+          lng: location.longitude,
+        };
+      }
+
+      return null;
+    } catch (error) {
+      console.error(`Failed to fetch lat/lng for placeId ${placeId}:`, error.response?.data || error.message);
+      return null;
+    }
+  }
+
+
   static async getFoodPostsWithRestaurantData(radius?: number): Promise<FoodPost[]> {
     try {
-      // Step 1: Fetch closest restaurants
       const restaurants = await this.getClosestRestaurants(radius);
 
       if (restaurants.length === 0) {
         return [];
       }
 
-      // Step 2: Extract restaurant IDs
-      const restaurantIds = restaurants.map(restaurant => restaurant.restaurant_id);
-
-      // Step 3: Fetch recommendations
+      const restaurantIds = restaurants.map(r => r.restaurant_id);
       const recommendations = await this.getRecommendations(restaurantIds);
 
-      // Step 4: Enrich recommendations with restaurant data
-      const enrichedFoodPosts = recommendations.map(recommendation => {
-        const restaurant = restaurants.find(r => r.restaurant_id === recommendation.restaurant_id);
-        return {
-          ...recommendation,
-          restaurantName: restaurant?.restaurant_name || 'Unknown Restaurant',
-          walkingTime: restaurant
-            ? this.calculateWalkingTime(restaurant.walking_distance)
-            : '0 min',
-        };
-      });
+      const enrichedFoodPosts = await Promise.all(
+        recommendations.map(async (recommendation) => {
+          const restaurant = restaurants.find(r => r.restaurant_id === recommendation.restaurant_id);
+
+          let latLng = null;
+          if (recommendation.google_place_id) {
+            latLng = await this.getLatLngFromPlaceId(recommendation.google_place_id);
+
+          } else {
+            console.warn(`No Google Place ID found for dish_id: ${recommendation.dish_id}`);
+          }
+
+          return {
+            ...recommendation,
+            restaurantName: restaurant?.restaurant_name || 'Unknown Restaurant',
+            walkingTime: restaurant
+              ? this.calculateWalkingTime(restaurant.walking_distance)
+              : '0 min',
+            lat: latLng?.lat ?? null,
+            lng: latLng?.lng ?? null,
+            address: restaurant?.address,
+            city: restaurant?.city,
+            country: restaurant?.country,
+            state: restaurant?.state,
+            area: restaurant?.area,
+          };
+        })
+      );
+
 
       return enrichedFoodPosts;
     } catch (error) {

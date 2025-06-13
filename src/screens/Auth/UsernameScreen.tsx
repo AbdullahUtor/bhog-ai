@@ -1,38 +1,54 @@
-import React, {useState} from 'react';
-import {View, Text, StyleSheet, Alert, TouchableOpacity, Image, Dimensions} from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, Alert, TouchableOpacity, Image, Dimensions } from 'react-native';
 import AppIcons from '../../utils/Icons.ts';
 import OutlineButton from '../../components/common/OutlineButton.tsx';
 import palette from '../../utils/colors.ts';
 import BottomBorderInput from '../../components/common/BottomBorderInput.tsx';
+import {useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {RootStackParamList} from '../../types/types.ts';
 
 
 const { width, height } = Dimensions.get('window');
+type UsernameProp = NativeStackNavigationProp<RootStackParamList>;
+
 
 const UsernameScreen = () => {
-
-  const [isInputFilled, setIsInputFilled] = useState(false);
   const [inputValue, setInputValue] = useState('');
+  const [isInputFilled, setIsInputFilled] = useState(false);
+  const [showError, setShowError] = useState(false);
+  const navigation = useNavigation<UsernameProp>();
+  const validateName = (name: string) => {
+    // Simple validation: non-empty and maybe no numbers (can be extended)
+    return name.trim().length > 0;
+  };
 
-
-
-  const handleInputStateChange = (isFilled: boolean) => {
-    setIsInputFilled(isFilled);
+  const onChangeText = (text: string) => {
+    setInputValue(text);
+    const valid = validateName(text);
+    setIsInputFilled(valid);
+    if (valid) setShowError(false);
   };
 
   const updateUserName = () => {
-    if (!inputValue.trim()) {
-      Alert.alert('Name Required', 'Please enter your full name to continue.');
+    if (!validateName(inputValue)) {
+      setShowError(true);
       return;
     }
-    // router.push('/InputContactView');
+    setShowError(false);
+    if (inputValue.trim() !== '') {
+      navigation.navigate('Contact', { username: inputValue });
+    }
   };
 
   return (
     <View style={styles.screenView}>
-      <TouchableOpacity style={styles.backButtonStyle} onPress={() =>
-        // router.back()
-        ()=>{}
-      }>
+      <TouchableOpacity
+        style={styles.backButtonStyle}
+        onPress={() => {
+          // router.back()
+        }}
+      >
         <Image style={styles.arrowStyle} source={AppIcons.arrowLeft} />
       </TouchableOpacity>
 
@@ -47,12 +63,20 @@ const UsernameScreen = () => {
         <BottomBorderInput
           initialValue=""
           hintText="Jonny Applesauce"
-          onTextChange={(text) => {
-            setInputValue(text);
-            setIsInputFilled(text.trim().length > 0);
-          }}
-          onInputStateChange={handleInputStateChange}
+          onTextChange={onChangeText}
+          onInputStateChange={() => {}}
         />
+        <Text
+          style={{
+            color: showError ? 'red' : 'transparent',
+            fontSize: 16,
+            fontWeight: '500',
+            fontFamily: 'DM Sans',
+            marginTop: 4,
+          }}
+        >
+          Opps! not a valid name.
+        </Text>
       </View>
 
       <OutlineButton
@@ -71,7 +95,7 @@ export default UsernameScreen;
 const styles = StyleSheet.create({
   screenView: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: palette.primary.bg,
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
     paddingHorizontal: width * 0.06,

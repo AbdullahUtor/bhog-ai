@@ -11,13 +11,15 @@ import {
 import ItemContainer from '../../components/common/ItemContainer.tsx';
 import RecommendationService, {FoodPost} from '../../services/RecommendationService.ts';
 import palette from '../../utils/colors.ts';
-import AppBarWithLeading from '../../components/common/AppBar.tsx'; // Adjust path as needed
+import AppBarWithLeading from '../../components/common/AppBar.tsx';
+import {useUser} from '../../hooks/UserContext.tsx'; // Adjust path as needed
 
 const HomeScreen: React.FC = () => {
   const [foodPosts, setFoodPosts] = useState<FoodPost[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const { user } = useUser();
 
   // Main function to fetch food posts
   const fetchFoodPosts = async () => {
@@ -65,8 +67,15 @@ const HomeScreen: React.FC = () => {
   if (loading) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" color="#0000ff" />
-        <Text style={{ marginTop: 10, fontSize: 16 }}>Loading food recommendations...</Text>
+        <Text style={{ fontFamily: 'EB Garamond', color: '#262020',  fontSize: 36, marginBottom: 10, textAlign: 'center', paddingHorizontal: 22,  }}>
+          Welcome back{user?.name ? `, ${user.name}` : ''}! Hungry?
+        </Text>
+
+        <Text style={{ fontFamily: 'Gabarito', color: '#76766A',  fontSize: 14, marginBottom: 10, textAlign: 'center', paddingHorizontal: 90, paddingTop: 50, paddingBottom: 10  }}>
+          Give us a moment as we load your recommendations...
+        </Text>
+
+        <ActivityIndicator size="large" color="#525147" />
       </View>
     );
   }
@@ -135,11 +144,6 @@ const styles = StyleSheet.create({
     backgroundColor: palette.primary.bg,
     alignItems: 'center',
   },
-  // container: {
-  //   flex: 1,
-  //   justifyContent: 'center',
-  //   alignItems: 'center',
-  // },
   text: {
     fontSize: 24,
     fontWeight: '600',
