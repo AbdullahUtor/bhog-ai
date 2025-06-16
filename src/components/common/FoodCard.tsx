@@ -2,12 +2,25 @@ import React from 'react';
 import {View, Text, StyleSheet, Image, TouchableOpacity, Dimensions} from 'react-native';
 import AppIcons from '../../utils/Icons.ts'; // assuming you have these icons
 import palette from '../../utils/colors.ts';
+import {Flavors} from '../../services/RecommendationService.ts';
 const { width } = Dimensions.get('window');
 type Restaurant = {
   id: string;
   name: string;
   latitude: number;
   longitude: number;
+  description: string | null;
+  distance: number;
+  flavors: Flavors;
+  ingredients: string[];
+  google_place_id: string;
+  allergens: string[];
+  rating: number | null;
+  review_count: number | null;
+  dish_price: number | null;
+  icon_url: string;
+  restaurantName?: string;
+  walkingTime?: string;
 };
 
 type Props = {
@@ -27,34 +40,35 @@ export default function FoodCard({ item, onViewDetails, onNotForMe }: Props) {
       </View>
 
       <View style={styles.locationRow}>
-        <Image source={AppIcons.locationMarkerFilled} style={styles.locationIcon} />
-        <Text style={styles.locationText}>The TimHortons</Text>
+        <Image
+          source={AppIcons.locationMarkerFilled}
+          style={styles.locationIcon}
+        />
+        <Text style={styles.locationText}>{item.restaurantName}</Text>
       </View>
 
       <View style={styles.ratingRow}>
         <View style={styles.walkTime}>
           <Image source={AppIcons.personWalkingIcon} style={styles.walkIcon} />
-          <Text style={styles.walkText}>9 min</Text>
+          <Text style={styles.walkText}>{item.walkingTime}s</Text>
         </View>
 
         <Image source={AppIcons.seperatorIcon} style={styles.separator} />
 
         <View style={styles.starsRow}>
-          {[0, 1, 2, 3, 4].map((index) => (
+          {[0, 1, 2, 3, 4].map(index => (
             <Image
               key={index}
               source={
-                index < 4
-                  ? AppIcons.filledStarIcon
-                  : AppIcons.emptyStarIcon
+                index < 4 ? AppIcons.filledStarIcon : AppIcons.emptyStarIcon
               }
               style={styles.starIcon}
             />
           ))}
-          <Text style={styles.reviewCount}>(293)</Text>
+          <Text style={styles.reviewCount}>({item.review_count ?? 0})</Text>
         </View>
 
-        <Text style={styles.price}>$$$</Text>
+        <Text style={styles.price}>${item.dish_price}</Text>
       </View>
 
       <View style={styles.divider} />
@@ -64,7 +78,9 @@ export default function FoodCard({ item, onViewDetails, onNotForMe }: Props) {
           <Text style={styles.notForMeText}>Not for me</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.viewDetailsButton} onPress={onViewDetails}>
+        <TouchableOpacity
+          style={styles.viewDetailsButton}
+          onPress={onViewDetails}>
           <Text style={styles.viewDetailsText}>View Details</Text>
           <Image source={AppIcons.arrowRight} style={styles.arrowRightIcon} />
         </TouchableOpacity>
@@ -124,6 +140,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Gabarito',
     fontSize: 12,
     fontWeight: '500',
+    textTransform: 'capitalize',
     color: palette.accent.accentDark,
   },
   ratingRow: {

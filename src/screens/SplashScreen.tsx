@@ -19,18 +19,28 @@ export default function SplashScreen() {
       const unsubscribe = auth().onAuthStateChanged(async user => {
         if (user) {
           try {
-            const { isValidUser, userData } = await fetchUserProfile();
+            const { isValidUser, userData, selectedDishes } = await fetchUserProfile();
             setUser(userData);
-            navigation.reset({
-              index: 0,
-              routes: [{ name: isValidUser ? 'MainTabs' : 'Username' }],
-            });
+
+            if (!isValidUser) {
+              navigation.reset({ index: 0, routes: [{ name: 'Username' }] });
+            } else if (!selectedDishes.length) {
+              navigation.reset({ index: 0, routes: [{ name: 'FoodQuiz' }] });
+            }  else {
+              navigation.reset({ index: 0, routes: [{ name: 'MainTabs' }] });
+            }
+            // navigation.reset({
+            //   index: 0,
+            //   routes: [{ name: isValidUser ? 'MainTabs' : 'Username' }],
+            // });
           } catch (e) {
             // fallback to login
             navigation.reset({
               index: 0,
               routes: [{ name: 'SignIn' }],
             });
+          } finally {
+            setLoading(false);
           }
         } else {
           navigation.reset({
