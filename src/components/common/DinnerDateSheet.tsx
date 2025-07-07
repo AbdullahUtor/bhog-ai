@@ -30,42 +30,12 @@ const DinnerDateSheet: React.FC<DinnerDateSheetProps> = ({
 
       </View>
 
-      {/* Close Button */}
-      {/*<View style={styles.closeButtonContainer}>*/}
-      {/*  <TouchableOpacity onPress={onClose} style={styles.closeButton}>*/}
-      {/*    <Image*/}
-      {/*      source={AppIcons.close} // You'll need to add this to your Icons*/}
-      {/*      style={styles.closeIcon}*/}
-      {/*    />*/}
-      {/*  </TouchableOpacity>*/}
-      {/*</View>*/}
+      <Text style={styles.title}>Coming Soon!</Text>
+      <Text style={styles.subtitle}>We’re working on letting you eat with friends. In the
+        meantime, invite them to use the app!</Text>
 
-      {/* Title Section */}
-      <Text style={styles.title}>Dinner Date</Text>
-      <Text style={styles.subtitle}>Eat with a friend</Text>
-
-      {/* User Info Card */}
-      <View style={styles.userCard}>
-        <Image
-          source={AppIcons.dummyUser} // Update path as needed
-          style={styles.userImage}
-        />
-        <View style={styles.userInfo}>
-          <Text style={styles.userName}>Kim B.</Text>
-          <Text style={styles.userTitle}>Gourmet Guru</Text>
-          <Text style={styles.userMeals}>2 meals shared</Text>
-        </View>
-        <TouchableOpacity
-          onPress={onChangeUser}
-          style={styles.changeButton}
-        >
-          <Text style={styles.changeText}>Change</Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Let's Eat Button */}
       <TouchableOpacity onPress={onLetsEat} style={styles.primaryButton}>
-        <Text style={styles.primaryButtonText}>Let's Eat</Text>
+        <Text style={styles.primaryButtonText}>Invite</Text>
       </TouchableOpacity>
     </View>
   );
@@ -78,7 +48,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 18,
     paddingHorizontal: 21,
     paddingBottom: 32,
-    minHeight: 300,
+    minHeight: 100,
   },
   indicatorContainer: {
     alignItems: 'center',
@@ -117,7 +87,7 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontFamily: 'Gabarito',
-    fontSize: 12,
+    fontSize: 14,
     color: palette.accent.accentDark,
     fontWeight: '500',
     textAlign: 'center',
@@ -174,7 +144,7 @@ const styles = StyleSheet.create({
     color: '#262020',
   },
   primaryButton: {
-    backgroundColor: '#292D32', // Assuming primary button color
+    backgroundColor: '#525147', // Assuming primary button color
     borderRadius: 18,
     paddingVertical: 16,
     alignItems: 'center',

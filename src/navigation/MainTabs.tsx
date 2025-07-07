@@ -39,7 +39,7 @@ const iconStyle = (focused: boolean) => ({
 
 const MainTabs = () => {
   const bottomSheetRef = useRef<BottomSheet>(null);
-  const snapPoints = React.useMemo(() => ['35%'], []);
+  const snapPoints = React.useMemo(() => ['27%'], []);
 
   const translateY = useRef(new Animated.Value(0)).current;
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);

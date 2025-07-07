@@ -8,8 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
+		18A0A2812E16B0FB00FBCBE1 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 18A0A2802E16B0FB00FBCBE1 /* GoogleService-Info.plist */; };
 		19C8189B42184C1C9FE27987 /* EBGaramond-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F7E8FE31605D41DAB30CA873 /* EBGaramond-Bold.ttf */; };
-		372153472DF4BE5F00639889 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 372153462DF4BE5F00639889 /* GoogleService-Info.plist */; };
 		496D8557C0DC4724B6EA1621 /* EBGaramond-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A17515DF61DA4D2996D323E9 /* EBGaramond-Medium.ttf */; };
 		6002B5FE10D44BB398D77418 /* SpaceMono-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DEDC839034CF440B8B6934A8 /* SpaceMono-Regular.ttf */; };
 		761780ED2CA45674006654EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780EC2CA45674006654EE /* AppDelegate.swift */; };
@@ -26,8 +26,8 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = bhogi/Info.plist; sourceTree = "<group>"; };
 		13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = PrivacyInfo.xcprivacy; path = bhogi/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		1419FAC96B6D72F9265EA21A /* Pods-bhogi.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-bhogi.debug.xcconfig"; path = "Target Support Files/Pods-bhogi/Pods-bhogi.debug.xcconfig"; sourceTree = "<group>"; };
+		18A0A2802E16B0FB00FBCBE1 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		1DEA28F799E84F0580099A6B /* DMSans-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "DMSans-Regular.ttf"; path = "../assets/fonts/DMSans-Regular.ttf"; sourceTree = "<group>"; };
-		372153462DF4BE5F00639889 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		761780EC2CA45674006654EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = bhogi/AppDelegate.swift; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = bhogi/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		992304BA9F1A4FC9B354B971 /* EBGaramond-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "EBGaramond-Regular.ttf"; path = "../assets/fonts/EBGaramond-Regular.ttf"; sourceTree = "<group>"; };
@@ -54,7 +54,7 @@
 		13B07FAE1A68108700A75B9A /* bhogi */ = {
 			isa = PBXGroup;
 			children = (
-				372153462DF4BE5F00639889 /* GoogleService-Info.plist */,
+				18A0A2802E16B0FB00FBCBE1 /* GoogleService-Info.plist */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				761780EC2CA45674006654EE /* AppDelegate.swift */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
@@ -186,8 +186,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
-				372153472DF4BE5F00639889 /* GoogleService-Info.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				18A0A2812E16B0FB00FBCBE1 /* GoogleService-Info.plist in Resources */,
 				A986EC66657118CDC37FD887 /* PrivacyInfo.xcprivacy in Resources */,
 				D7BC4E1AA6BC48A3B37D8679 /* DMSans-Regular.ttf in Resources */,
 				19C8189B42184C1C9FE27987 /* EBGaramond-Bold.ttf in Resources */,
@@ -305,7 +305,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = B936XYB2GK;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = bhogi/Info.plist;
@@ -334,7 +334,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = B936XYB2GK;
 				INFOPLIST_FILE = bhogi/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
@@ -435,7 +435,10 @@
 					"-DFOLLY_CFG_NO_COROUTINES=1",
 					"-DFOLLY_HAVE_CLOCK_GETTIME=1",
 				);
-				OTHER_LDFLAGS = "$(inherited)  ";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					" ",
+				);
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
@@ -515,7 +518,10 @@
 					"-DFOLLY_CFG_NO_COROUTINES=1",
 					"-DFOLLY_HAVE_CLOCK_GETTIME=1",
 				);
-				OTHER_LDFLAGS = "$(inherited)  ";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					" ",
+				);
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				USE_HERMES = true;
