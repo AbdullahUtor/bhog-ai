@@ -131,8 +131,6 @@ const ProfileScreen = () => {
           © 2025 Bhogi Inc. | Patent Pending
         </Text>
       </View>
-
-
     </View>
 
   );
