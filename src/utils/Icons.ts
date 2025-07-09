@@ -31,6 +31,8 @@ const AppIcons = {
   indicator: require('../../assets/icons/indicator.png'),
   close: require('../../assets/icons/close.png'),
   dummyUser: require('../../assets/icons/dummyuser.png'),
+  glassIcon: require('../../assets/icons/glass-icon.png'),
+  plateIcon: require('../../assets/icons/plate.png'),
 };
 
 

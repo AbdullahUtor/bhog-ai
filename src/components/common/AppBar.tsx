@@ -1,24 +1,34 @@
 
 import React from 'react';
 import {
+  ActivityIndicator,
   Image,
   SafeAreaView, StyleSheet,
   Text,
   View,
-} from "react-native";
+} from 'react-native';
 import AppIcons from '../../utils/Icons.ts';
 import palette from '../../utils/colors.ts';
+import {useLocation} from '../../hooks/UseLocation.tsx';
 
 
 
 const AppBarWithLeading = () => {
+  const { location, loading, error, refetch } = useLocation();
+
   return (
     <SafeAreaView>
       <View style={styles.appBar}>
         <Image style={styles.iconStyle} source={AppIcons.goldenLogo} />
         <View style={styles.locationContainer}>
           <Image style={styles.locationMarker} source={AppIcons.markerPin} />
-          <Text style={styles.locationTextStyle}>Washington DC</Text>
+          {loading ? (
+            <ActivityIndicator size="small" color="#76766A" />
+          ) : error ? (
+            <Text style={styles.locationTextStyle}>Location Error</Text>
+          ) : (
+            <Text style={styles.locationTextStyle}>{location?.city}</Text>
+          )}
         </View>
       </View>
     </SafeAreaView>

@@ -26,11 +26,11 @@ const MapOptionsContent: React.FC<Props> = ({ onClose, onOpenAppleMaps, onOpenGo
         <TouchableOpacity style={styles.optionButton} onPress={onOpenGoogleMaps}>
           <Text style={styles.optionText}>Google Maps</Text>
         </TouchableOpacity>
-        <View style={styles.divider} />
-        <TouchableOpacity style={styles.optionButton} onPress={onClose}>
-          <Text style={styles.optionText}>Bhogi Maps</Text>
-        </TouchableOpacity>
-        <View style={styles.spacer} />
+        {/*<View style={styles.divider} />*/}
+        {/*<TouchableOpacity style={styles.optionButton} onPress={onClose}>*/}
+        {/*  <Text style={styles.optionText}>Bhogi Maps</Text>*/}
+        {/*</TouchableOpacity>*/}
+        {/*<View style={styles.spacer} />*/}
       </View>
       </View>
 

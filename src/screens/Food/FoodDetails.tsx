@@ -277,17 +277,17 @@ const FoodDetails: React.FC<FoodDetailsProps> = ({ route }) => {
 
       <RBSheet
         ref={bottomSheetRef}
-        height={340}
+        height={280}
         openDuration={250}
         closeDuration={200}
         customStyles={{
           wrapper: {
-            backgroundColor: 'rgba(0, 0, 0, 0.6)', // Darker background like Flutter
+            backgroundColor: 'rgba(0, 0, 0, 0.6)',
           },
           container: {
             borderTopLeftRadius: 18,
             borderTopRightRadius: 18,
-            backgroundColor: 'transparent', // Let content define color
+            backgroundColor: 'transparent',
             overflow: 'visible',
           },
           draggableIcon: {

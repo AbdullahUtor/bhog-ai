@@ -6,7 +6,7 @@ import {
   Platform,
   Text,
   StyleSheet,
-  Animated,
+  Animated, Share,
 } from 'react-native';
 import BottomSheet, {
   BottomSheetView,
@@ -39,7 +39,7 @@ const iconStyle = (focused: boolean) => ({
 
 const MainTabs = () => {
   const bottomSheetRef = useRef<BottomSheet>(null);
-  const snapPoints = React.useMemo(() => ['35%'], []);
+  const snapPoints = React.useMemo(() => ['27%'], []);
 
   const translateY = useRef(new Animated.Value(0)).current;
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
@@ -84,6 +84,12 @@ const MainTabs = () => {
 
   const handleLetsEat = useCallback(() => {
     console.log("Let's Eat pressed!");
+
+    Share.share({
+      message: 'Check out this awesome app! Download it here: https://yourapp.com/download',
+      title: 'Invite to Dinner Date',
+    }).catch((error) => console.error('Error sharing', error));
+
     handleCloseBottomSheet();
   }, [handleCloseBottomSheet]);
 

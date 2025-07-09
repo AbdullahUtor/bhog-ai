@@ -24,23 +24,37 @@ const SignInScreen = ({ navigation }) => {
             console.log('User Info:', user);
             // navigation.navigate('Username');
 
-            const { isValidUser, userData } = await fetchUserProfile();
+            const { isValidUser, userData, selectedDishes = [] } = await fetchUserProfile();
 
-            if (isValidUser) {
-                // Navigate directly to MainTabs if profile is complete
-              setUser(userData);
-                navigation.reset({
-                    index: 0,
-                    // routes: [{ name: 'MainTabs' }],
-                    routes:[{name: 'FoodAllergen'}],
-                });
-            } else {
-                // Otherwise, go to Username screen to complete profile
-                navigation.reset({
-                    index: 0,
-                    routes: [{ name: 'Username' }],
-                });
-            }
+          setUser(userData);
+
+          let nextRoute = 'MainTabs';
+          if (!isValidUser) {
+            nextRoute = 'Username';
+          } else if (!selectedDishes.length) {
+            nextRoute = 'FoodQuiz';
+          }
+
+          navigation.reset({
+            index: 0,
+            routes: [{ name: nextRoute }],
+          });
+
+            // if (isValidUser) {
+            //     // Navigate directly to MainTabs if profile is complete
+            //   setUser(userData);
+            //     navigation.reset({
+            //         index: 0,
+            //         // routes: [{ name: 'MainTabs' }],
+            //         routes:[{name: 'FoodAllergen'}],
+            //     });
+            // } else {
+            //     // Otherwise, go to Username screen to complete profile
+            //     navigation.reset({
+            //         index: 0,
+            //         routes: [{ name: 'Username' }],
+            //     });
+            // }
         }
 
     }catch(error){
