@@ -14,7 +14,7 @@ import {useLocation} from '../../hooks/UseLocation.tsx';
 
 
 const AppBarWithLeading = () => {
- const {location, loading} = useLocation();
+  const { location, loading, error, refetch } = useLocation();
 
   return (
     <SafeAreaView>
@@ -24,6 +24,8 @@ const AppBarWithLeading = () => {
           <Image style={styles.locationMarker} source={AppIcons.markerPin} />
           {loading ? (
             <ActivityIndicator size="small" color="#76766A" />
+          ) : error ? (
+            <Text style={styles.locationTextStyle}>Location Error</Text>
           ) : (
             <Text style={styles.locationTextStyle}>{location?.city}</Text>
           )}

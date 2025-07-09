@@ -6,7 +6,7 @@ import {
   Platform,
   Text,
   StyleSheet,
-  Animated,
+  Animated, Share,
 } from 'react-native';
 import BottomSheet, {
   BottomSheetView,
@@ -84,6 +84,12 @@ const MainTabs = () => {
 
   const handleLetsEat = useCallback(() => {
     console.log("Let's Eat pressed!");
+
+    Share.share({
+      message: 'Check out this awesome app! Download it here: https://yourapp.com/download',
+      title: 'Invite to Dinner Date',
+    }).catch((error) => console.error('Error sharing', error));
+
     handleCloseBottomSheet();
   }, [handleCloseBottomSheet]);
 
