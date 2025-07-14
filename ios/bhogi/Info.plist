@@ -43,6 +43,8 @@
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
 	</dict>
+	  <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+      <string>This app needs access to location to provide better services.</string>
     <key>NSLocationWhenInUseUsageDescription</key>
     <string>This app needs access to location to provide better services.</string>
     <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
