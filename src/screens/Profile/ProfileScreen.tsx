@@ -38,7 +38,11 @@ const ProfileScreen = () => {
   };
 
   const goToFoodAllergens = ()=> {
-    const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+    navigation.navigate('FoodSensitivities');
+  }
+
+  const goToFoodQuiz = ()=> {
+    navigation.navigate('EditFoodQuiz');
   }
 
   return (
@@ -75,14 +79,21 @@ const ProfileScreen = () => {
             </View>
           </Pressable>
 
+
+
           <View style={styles.spacer} />
-          <View style={styles.optionButton}>
+          <Pressable
+            onPress={() => {
+              goToFoodQuiz();
+              console.log('Food Preferences Pressed');
+            }}
+            style={styles.optionButton}>
             <Image style={styles.icon} source={AppIcons.plateIcon} />
             <View style={styles.optionRow}>
               <Text style={styles.optionText}>Food preferences</Text>
               <Image style={styles.arrowIcon} source={AppIcons.arrowRight} />
             </View>
-          </View>
+          </Pressable>
 
           <View style={styles.bottomSpace} />
           <View style={styles.footer}>

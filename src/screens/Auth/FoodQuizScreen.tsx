@@ -159,11 +159,6 @@ const FoodQuizScreen = ({ navigation }) =>{
 
   return (
     <View style={styles.container}>
-      {/*<View style={styles.sideContainer}>*/}
-      {/*  <TouchableOpacity onPress={() => console.log('GoBack!')} style={styles.backButton}>*/}
-      {/*    <Image source={AppIcons.arrowLeft} style={styles.arrow} />*/}
-      {/*  </TouchableOpacity>*/}
-      {/*</View>*/}
 
       <View style={styles.headingAndBodyText}>
         <Text style={styles.textStyle}>Choose at least 5 dishes you like:</Text>
