@@ -36,27 +36,54 @@ import '@react-native-firebase/auth';
 import { firebase } from '@react-native-firebase/auth';
 import { UserProvider } from './src/hooks/UserContext.tsx';
 import {initializeNotifications} from './src/services/NotificationsHandler.tsx';
+import messaging from '@react-native-firebase/messaging';
+import FeedbackDialog from './src/components/common/FeedbackDialog.tsx';
 
 
 function App() {
-  const [showFeedbackSheet, setShowFeedbackSheet] = useState(false);
+  const [showFeedbackDialog, setShowFeedbackDialog] = useState(false);
 
   useEffect(() => {
-    if (!firebase.apps.length) {
-      firebase.initializeApp(firebase);
-    }
+    // Ask for notification permission
+    const requestPermission = async () => {
+      const authStatus = await messaging().requestPermission();
+      const enabled =
+        authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+        authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+      if (enabled) {
+        console.log('Notification permission granted');
+      }
+    };
 
-    // Initialize notifications once on app load
-    initializeNotifications(() => {
-      // This callback is called when feedback notification is tapped
-      setShowFeedbackSheet(true);
-    });
+    // Listen for when a notification is tapped (background or terminated)
+    const setupNotificationListeners = () => {
+      messaging().onNotificationOpenedApp(remoteMessage => {
+        // if (remoteMessage?.data?.type === 'feedback') {
+          setShowFeedbackDialog(true);
+        // }
+      });
+
+      messaging()
+        .getInitialNotification()
+        .then(remoteMessage => {
+          if (remoteMessage?.data?.type === 'feedback') {
+            setShowFeedbackDialog(true);
+          }
+        });
+    };
+
+    requestPermission();
+    setupNotificationListeners();
   }, []);
-
   return (
     <UserProvider>
       <NavigationContainer>
-        <RootNavigator showFeedbackSheet={showFeedbackSheet} setShowFeedbackSheet={setShowFeedbackSheet} />
+        <RootNavigator />
+
+        <FeedbackDialog
+          visible={showFeedbackDialog}
+          onClose={() => setShowFeedbackDialog(false)}
+        />
       </NavigationContainer>
     </UserProvider>
   );
