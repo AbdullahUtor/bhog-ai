@@ -11,6 +11,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import {RootStackParamList} from '../types/types.ts';
 import FoodDetails from '../screens/Food/FoodDetails.tsx';
 import FoodAllergensScreen from '../screens/Auth/FoodAllergensScreen.tsx';
+import FoodSensitivitiesScreen from '../screens/Auth/EditAllergens.tsx';
+import EditFoodQuizScreen from '../screens/Auth/EditFoodQuizScreen.tsx';
 
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -25,6 +27,8 @@ const RootNavigator = () => {
       <Stack.Screen name="Contact" component={ContactScreen} />
       <Stack.Screen name="FoodQuiz" component={FoodQuizScreen} />
       <Stack.Screen name="FoodAllergen" component={FoodAllergensScreen} />
+      <Stack.Screen name="FoodSensitivities" component={FoodSensitivitiesScreen} />
+      <Stack.Screen name="EditFoodQuiz" component={EditFoodQuizScreen} />
       <Stack.Screen name="MainTabs" component={MainTabs} />
       <Stack.Screen name="FoodDetails" component={FoodDetails} />
     </Stack.Navigator>
@@ -33,3 +37,8 @@ const RootNavigator = () => {
 
 
 export default RootNavigator;
+
+
+
+
+// <Stack.Screen name={"FoodSensitivities"} component={FoodSensitivitiesScreen}/>

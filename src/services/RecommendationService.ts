@@ -82,6 +82,7 @@ export class FoodApiService {
       const response = await baseClient.post<RecommendationsResponse>('/recommendations/', {
         restaurant_ids: restaurantIds,
       });
+      console.log(response.data.results);
       return response.data.results;
     } catch (error) {
       console.error('Error fetching recommendations:', error);
@@ -124,9 +125,9 @@ export class FoodApiService {
   }
 
 
-  static async getFoodPostsWithRestaurantData(radius?: number): Promise<FoodPost[]> {
+  static async getFoodPostsWithRestaurantData(radius?: number, lat?: number, long?: number): Promise<FoodPost[]> {
     try {
-      const restaurants = await this.getClosestRestaurants(radius);
+      const restaurants = await this.getClosestRestaurants(radius, lat, long);
 
       if (restaurants.length === 0) {
         return [];

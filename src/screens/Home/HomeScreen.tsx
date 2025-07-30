@@ -12,75 +12,134 @@ import ItemContainer from '../../components/common/ItemContainer.tsx';
 import RecommendationService, {FoodPost} from '../../services/RecommendationService.ts';
 import palette from '../../utils/colors.ts';
 import AppBarWithLeading from '../../components/common/AppBar.tsx';
-import {useUser} from '../../hooks/UserContext.tsx'; // Adjust path as needed
+import {useUser} from '../../hooks/UserContext.tsx';
+import {useLocation} from '../../hooks/UseLocation.tsx'; // Adjust path as needed
 
 const HomeScreen: React.FC = () => {
+  // const [foodPosts, setFoodPosts] = useState<FoodPost[]>([]);
+  // const [loading, setLoading] = useState<boolean>(true);
+  // const [refreshing, setRefreshing] = useState<boolean>(false);
+  // const [error, setError] = useState<string | null>(null);
+  // const { user } = useUser();
+  // const { location, loading: locationLoading, error: locationError, refetch: refetchLocation } = useLocation();
+  //
+  // // Main function to fetch food posts
+  // const fetchFoodPosts = async () => {
+  //   try {
+  //     setError(null);
+  //     const foodPostsData = await RecommendationService.getFoodPostsWithRestaurantData();
+  //     setFoodPosts(foodPostsData);
+  //   } catch (error) {
+  //     console.error('Error in fetchFoodPosts:', error);
+  //     const errorMessage = error instanceof Error ? error.message : 'Failed to fetch food posts';
+  //     setError(errorMessage);
+  //     Alert.alert(
+  //       'Error',
+  //       'Failed to load food recommendations. Please try again.',
+  //       [{ text: 'OK' }]
+  //     );
+  //   }
+  // };
+  //
+  // // Initial data fetch
+  // useEffect(() => {
+  //   const loadData = async () => {
+  //     setLoading(true);
+  //     await fetchFoodPosts();
+  //     setLoading(false);
+  //   };
+  //
+  //   loadData();
+  // }, []);
+  //
+  // // Pull to refresh handler
+  // const onRefresh = async () => {
+  //   setRefreshing(true);
+  //   await fetchFoodPosts();
+  //   setRefreshing(false);
+  // };
+  //
+  // // Retry handler for error state
+  // const handleRetry = async () => {
+  //   setLoading(true);
+  //   await fetchFoodPosts();
+  //   setLoading(false);
+  // };
+  //
+  // if (loading) {
+  //   return (
+  //     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+  //       <Text style={{ fontFamily: 'EB Garamond', color: '#262020',  fontSize: 36, marginBottom: 10, textAlign: 'center', paddingHorizontal: 22,  }}>
+  //         Welcome back{user?.name ? `, ${user.name}` : ''}! Hungry?
+  //       </Text>
+  //
+  //       <Text style={{ fontFamily: 'Gabarito', color: '#76766A',  fontSize: 14, marginBottom: 10, textAlign: 'center', paddingHorizontal: 90, paddingTop: 50, paddingBottom: 10  }}>
+  //         Give us a moment as we load your recommendations...
+  //       </Text>
+  //
+  //       <ActivityIndicator size="large" color="#525147" />
+  //     </View>
+  //   );
+  // }
   const [foodPosts, setFoodPosts] = useState<FoodPost[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const { user } = useUser();
 
-  // Main function to fetch food posts
+  const { user } = useUser();
+  const { location, loading: locationLoading, error: locationError, refetch: refetchLocation } = useLocation();
+
   const fetchFoodPosts = async () => {
+    if (!location) return;
+
     try {
       setError(null);
-      const foodPostsData = await RecommendationService.getFoodPostsWithRestaurantData();
+      const foodPostsData = await RecommendationService.getFoodPostsWithRestaurantData(100, location.latitude, location.longitude);
       setFoodPosts(foodPostsData);
     } catch (error) {
       console.error('Error in fetchFoodPosts:', error);
       const errorMessage = error instanceof Error ? error.message : 'Failed to fetch food posts';
       setError(errorMessage);
-      Alert.alert(
-        'Error',
-        'Failed to load food recommendations. Please try again.',
-        [{ text: 'OK' }]
-      );
+      Alert.alert('Error', 'Failed to load food recommendations. Please try again.');
     }
   };
 
-  // Initial data fetch
+  // Load food posts when location is available
   useEffect(() => {
-    const loadData = async () => {
+    if (location && !locationLoading) {
       setLoading(true);
-      await fetchFoodPosts();
-      setLoading(false);
-    };
+      fetchFoodPosts().finally(() => setLoading(false));
+    }
+  }, [location, locationLoading]);
 
-    loadData();
-  }, []);
-
-  // Pull to refresh handler
   const onRefresh = async () => {
     setRefreshing(true);
-    await fetchFoodPosts();
+    await refetchLocation(); // Refetch location first
+    // Note: useEffect will trigger food fetch once location updates
     setRefreshing(false);
   };
 
-  // Retry handler for error state
   const handleRetry = async () => {
     setLoading(true);
-    await fetchFoodPosts();
+    await refetchLocation();
     setLoading(false);
   };
 
-  if (loading) {
+  if (locationLoading || loading) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text style={{ fontFamily: 'EB Garamond', color: '#262020',  fontSize: 36, marginBottom: 10, textAlign: 'center', paddingHorizontal: 22,  }}>
+        <Text style={{ fontFamily: 'EB Garamond', fontSize: 36, color: '#262020', textAlign: 'center', paddingHorizontal: 22 }}>
           Welcome back{user?.name ? `, ${user.name}` : ''}! Hungry?
         </Text>
-
-        <Text style={{ fontFamily: 'Gabarito', color: '#76766A',  fontSize: 14, marginBottom: 10, textAlign: 'center', paddingHorizontal: 90, paddingTop: 50, paddingBottom: 10  }}>
-          Give us a moment as we load your recommendations...
+        <Text style={{ fontFamily: 'Gabarito', fontSize: 14, color: '#76766A', textAlign: 'center', marginTop: 20 }}>
+          Fetching your location and loading recommendations...
         </Text>
-
-        <ActivityIndicator size="large" color="#525147" />
+        <ActivityIndicator size="large" color="#525147" style={{ marginTop: 30 }} />
       </View>
     );
   }
 
-  if (error && foodPosts.length === 0) {
+    if (error && foodPosts.length === 0) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <Text style={{ fontSize: 18, marginBottom: 10, textAlign: 'center' }}>

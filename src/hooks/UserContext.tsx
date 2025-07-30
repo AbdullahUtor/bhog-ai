@@ -3,6 +3,8 @@ import React, { createContext, useContext, useState, ReactNode } from 'react';
 type User = {
   name: string;
   phone: string;
+  id: string;
+  role: string;
   [key: string]: any;
 };
 

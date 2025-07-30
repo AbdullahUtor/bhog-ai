@@ -20,6 +20,7 @@ import { RootStackParamList } from '../../types/types.ts';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import MiniMap from '../../components/common/MiniMap.tsx';
 import MapOptionsContent from '../../components/common/MapOptionSheet.tsx';
+import {postMapNavigationEvent} from '../../services/ScheduleNotificationEvent.tsx';
 
 
 const { width, height } = Dimensions.get('window');
@@ -73,12 +74,14 @@ const FoodDetails: React.FC<FoodDetailsProps> = ({ route }) => {
   };
 
   const openInAppleMaps = () => {
+    postMapNavigationEvent(foodPost);
     const { lat, lng } = foodPost;
     const url = `http://maps.apple.com/?daddr=${lat},${lng}`;
     Linking.openURL(url).catch(err => console.error('An error occurred', err));
   };
 
   const openInGoogleMaps = () => {
+    postMapNavigationEvent(foodPost);
     const { lat, lng } = foodPost;
     const url = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
     Linking.openURL(url).catch(err => console.error('An error occurred', err));

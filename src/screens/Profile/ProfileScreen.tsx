@@ -7,7 +7,7 @@ import {
   Image,
   ScrollView,
   SafeAreaView,
-  Dimensions,
+  Dimensions, Pressable,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { signOutFromGoogle } from '../../services/GoogleAuthService.ts';
@@ -17,13 +17,14 @@ import AppIcons from '../../utils/Icons.ts';
 import OutlineButton from '../../components/common/OutlineButton.tsx';
 import { useUser } from '../../hooks/UserContext.tsx';
 import getInitials from '../../utils/initials.ts';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {RootStackParamList} from '../../types/types.ts';
 
 const { width } = Dimensions.get('window');
 
 const ProfileScreen = () => {
   const navigation = useNavigation();
   const { user } = useUser();
-
   const handleLogout = async () => {
     try {
       await signOutFromGoogle();
@@ -35,6 +36,14 @@ const ProfileScreen = () => {
       Alert.alert('Error', 'Failed to logout. Please try again.');
     }
   };
+
+  const goToFoodAllergens = ()=> {
+    navigation.navigate('FoodSensitivities');
+  }
+
+  const goToFoodQuiz = ()=> {
+    navigation.navigate('EditFoodQuiz');
+  }
 
   return (
       <SafeAreaView style={styles.container}>
@@ -52,26 +61,39 @@ const ProfileScreen = () => {
               </Text>
             </View>
             <Text style={styles.userName}>{user?.name}</Text>
-            <Text style={styles.userStats}>You’ve tried 4 dishes so far.</Text>
+            <Text style={styles.userStats}>You’ve tried 0 dishes so far.</Text>
           </View>
 
           <View style={styles.spacer} />
-          <View style={styles.optionButton}>
+
+          <Pressable
+            onPress={() => {
+            goToFoodAllergens();
+              console.log('Food sensitivities pressed');
+            }}
+            style={styles.optionButton}>
             <Image style={styles.icon} source={AppIcons.glassIcon} />
             <View style={styles.optionRow}>
               <Text style={styles.optionText}>Food sensitivities</Text>
               <Image style={styles.arrowIcon} source={AppIcons.arrowRight} />
             </View>
-          </View>
+          </Pressable>
+
+
 
           <View style={styles.spacer} />
-          <View style={styles.optionButton}>
+          <Pressable
+            onPress={() => {
+              goToFoodQuiz();
+              console.log('Food Preferences Pressed');
+            }}
+            style={styles.optionButton}>
             <Image style={styles.icon} source={AppIcons.plateIcon} />
             <View style={styles.optionRow}>
               <Text style={styles.optionText}>Food preferences</Text>
               <Image style={styles.arrowIcon} source={AppIcons.arrowRight} />
             </View>
-          </View>
+          </Pressable>
 
           <View style={styles.bottomSpace} />
           <View style={styles.footer}>

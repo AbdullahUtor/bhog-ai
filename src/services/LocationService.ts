@@ -45,6 +45,9 @@ const requestLocationPermission = async (): Promise<boolean> => {
       const permission = PERMISSIONS.IOS.LOCATION_WHEN_IN_USE;
       const checkResult = await check(permission);
 
+      console.log("Permission: ", permission);
+      console.log("Check Result: ", checkResult);
+
       if (checkResult === RESULTS.GRANTED) {
         return true;
       }
@@ -55,6 +58,8 @@ const requestLocationPermission = async (): Promise<boolean> => {
       }
 
       if (checkResult === RESULTS.BLOCKED) {
+        console.log("LCOATION PERMISSION BLOCKED!");
+
         Alert.alert(
           'Location Permission Required',
           'Location access is required for this feature. Please enable it in Settings.',

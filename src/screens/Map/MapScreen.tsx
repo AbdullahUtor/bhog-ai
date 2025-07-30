@@ -19,6 +19,7 @@ import FoodApiService, { FoodPost } from '../../services/RecommendationService.t
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../types/types.ts';
+import {useLocation} from '../../hooks/UseLocation.tsx';
 
 const { width } = Dimensions.get('window');
 
@@ -36,6 +37,9 @@ export default function MapScreen() {
   const [selectedIndex, setSelectedIndex] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+
+  const { location, loading: locationLoading, error: locationError, refetch: refetchLocation } = useLocation();
+
 
   // Center map on selected index location
   const centerMapOn = (index: number) => {
@@ -68,17 +72,42 @@ export default function MapScreen() {
   };
 
   // Fetch food posts on mount
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       setLoading(true);
+  //       const data = await FoodApiService.getFoodPostsWithRestaurantData();
+  //       if (!data || data.length === 0) {
+  //         setError('No restaurants found.');
+  //       } else {
+  //         setFoodPosts(data);
+  //         setError(null);
+  //         // Center map on first location initially
+  //         setTimeout(() => centerMapOn(0), 500);
+  //       }
+  //     } catch (e) {
+  //       console.error('Failed to load food posts:', e);
+  //       setError('Failed to load data. Please try again.');
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+  //
+  //   fetchData();
+  // }, []);
+
   useEffect(() => {
     const fetchData = async () => {
+      if (!location) return;
+
       try {
         setLoading(true);
-        const data = await FoodApiService.getFoodPostsWithRestaurantData();
+        const data = await FoodApiService.getFoodPostsWithRestaurantData(100, location.latitude, location.longitude);
         if (!data || data.length === 0) {
           setError('No restaurants found.');
         } else {
           setFoodPosts(data);
           setError(null);
-          // Center map on first location initially
           setTimeout(() => centerMapOn(0), 500);
         }
       } catch (e) {
@@ -89,10 +118,20 @@ export default function MapScreen() {
       }
     };
 
-    fetchData();
-  }, []);
+    if (!locationLoading && location) {
+      fetchData();
+    }
+  }, [location, locationLoading]);
 
-  if (loading) {
+  // if (loading) {
+  //   return (
+  //     <View style={styles.loadingContainer}>
+  //       <ActivityIndicator size="large" color={palette.accent.accentDark} />
+  //       <Text style={styles.loadingText}>Loading restaurants...</Text>
+  //     </View>
+  //   );
+  // }
+  if (loading || locationLoading) {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color={palette.accent.accentDark} />
@@ -100,6 +139,7 @@ export default function MapScreen() {
       </View>
     );
   }
+
 
   if (error) {
     return (

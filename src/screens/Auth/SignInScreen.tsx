@@ -9,6 +9,7 @@ import palette from '../../utils/colors.ts';
 import OutlineButton from '../../components/common/OutlineButton.tsx';
 import {fetchUserProfile} from "../../services/UserService.ts";
 import {useUser} from '../../hooks/UserContext.tsx';
+import {sendFcmTokenToBackend} from '../../services/UserFcmService.ts';
 const { width, height } = Dimensions.get('window');
 
 const SignInScreen = ({ navigation }) => {
@@ -22,7 +23,8 @@ const SignInScreen = ({ navigation }) => {
         const user = await signInWithGoogle();
         if (user) {
             console.log('User Info:', user);
-            // navigation.navigate('Username');
+
+            await sendFcmTokenToBackend();
 
             const { isValidUser, userData, selectedDishes = [] } = await fetchUserProfile();
 
