@@ -82,6 +82,7 @@ export class FoodApiService {
       const response = await baseClient.post<RecommendationsResponse>('/recommendations/', {
         restaurant_ids: restaurantIds,
       });
+      console.log(response.data.results);
       return response.data.results;
     } catch (error) {
       console.error('Error fetching recommendations:', error);

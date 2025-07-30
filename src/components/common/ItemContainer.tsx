@@ -64,8 +64,9 @@ const ItemContainer: React.FC<ItemContainerProps> = ({ foodPost }) => {
                   : AppIcons.shrimp
               }
               onError={() => {
-                // Fallback to default icon if URL fails to load
+
                 console.log('Failed to load food icon, using default');
+                console.log(foodPost.icon_url);
               }}
             />
           </View>
